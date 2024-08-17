@@ -1,13 +1,17 @@
-package com.a29340;
+package com.a29340.elements;
+
+import com.a29340.core.Entity;
+import com.a29340.core.PlayElement;
+import com.a29340.core.Velocity;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import static com.a29340.Constants.FRAME_SIZE;
+import static com.a29340.utils.Constants.FRAME_SIZE;
 
-public class Asteroid extends Entity {
+public class Asteroid extends PlayElement {
     private boolean hit = false;
     private double scale;
     private double gamma = 0;
@@ -36,14 +40,14 @@ public class Asteroid extends Entity {
         Velocity velocity = new Velocity((target.x - randomPosition.x)/100, (target.y - randomPosition.y)/100);
         this.scale = Math.random() + 0.1;
         this.dgamma = Math.random() / 10;
-        this.position = randomPosition;
+        setPosition(randomPosition);
         this.velocity = velocity;
     }
 
     public Asteroid(Point position, Velocity velocity, double scale, double dgamma) {
         this.scale = scale;
         this.dgamma = dgamma;
-        this.position = position;
+        setPosition(position);
         this.velocity = velocity;
     }
 
@@ -51,7 +55,8 @@ public class Asteroid extends Entity {
     public void update(Graphics2D graphics) {
         Graphics2D g2d = (Graphics2D) graphics.create();
         gamma += dgamma;
-        position = velocity.getTargetFromPoint(position);
+        Point position = velocity.getTargetFromPoint(getPosition());
+        setPosition(position);
         bounds = new Rectangle(position.x - (int) (img.getWidth() * scale)/2,
                 position.y - (int) (img.getHeight() * scale)/2,
                 (int) (img.getWidth() * scale),
@@ -72,7 +77,7 @@ public class Asteroid extends Entity {
     }
 
     @Override
-    public void acceptCollision() {
+    public void acceptCollision(PlayElement collided) {
         hit = true;
     }
 }

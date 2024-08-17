@@ -1,4 +1,7 @@
-package com.a29340;
+package com.a29340.elements;
+
+import com.a29340.core.PlayElement;
+import com.a29340.core.Velocity;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,19 +15,21 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import static com.a29340.Constants.FRAME_SIZE;
+import static com.a29340.utils.Constants.FRAME_SIZE;
 
 
-public class Ship extends Entity implements MouseMotionListener, MouseInputListener, KeyListener {
+public class Ship extends PlayElement implements MouseMotionListener, MouseInputListener, KeyListener {
     private static final int VEL_STEP = 5;
 
     BufferedImage img;
     // Angle in rads
     private double angle = 0;
-    private Consumer<Entity> beamFunction;
+    private Consumer<PlayElement> beamFunction;
+    private HealthBar health;
 
 
-    public Ship(Consumer<Entity> beamFunction) {
+    public Ship(HealthBar health, Consumer<PlayElement> beamFunction) {
+        this.health = health;
         try {
             this.img = ImageIO.read(getClass().getClassLoader().getResource("images/ship.png"));
         } catch (IOException e) {
@@ -40,10 +45,11 @@ public class Ship extends Entity implements MouseMotionListener, MouseInputListe
                 velocity.increaseY(0);
             }
         });
-        position.setLocation(FRAME_SIZE.width/2, FRAME_SIZE.height/2);
+        getPosition().setLocation(FRAME_SIZE.width/2, FRAME_SIZE.height/2);
         slowDownTimer.start();
     }
     private void fireBeam() {
+        Point position = getPosition();
         Beam beam = new Beam(new Point(position.x, position.y), new Velocity(angle, 10));
         this.beamFunction.accept(beam);
     }
@@ -55,6 +61,7 @@ public class Ship extends Entity implements MouseMotionListener, MouseInputListe
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        Point position = getPosition();
         int dx = e.getX() - (position.x) ;
         int dy = e.getY() - (position.y);
         angle = Math.atan2(dy, dx) + Math.PI / 2;
@@ -116,6 +123,7 @@ public class Ship extends Entity implements MouseMotionListener, MouseInputListe
 
     @Override
     public void update(Graphics2D graphics) {
+        Point position = getPosition();
         position.setLocation(velocity.getTargetFromPoint(position));
         if (position.x < 0) {
             position.x = 0;
@@ -155,7 +163,9 @@ public class Ship extends Entity implements MouseMotionListener, MouseInputListe
     }
 
     @Override
-    public void acceptCollision() {
-
+    public void acceptCollision(PlayElement collided) {
+        if (collided instanceof Asteroid) {
+            this.health.setHealth(this.health.getHealth() - 10);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.a29340;
+package com.a29340.utils;
 
 import java.awt.*;
 

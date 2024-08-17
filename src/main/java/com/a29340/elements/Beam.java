@@ -1,13 +1,15 @@
-package com.a29340;
+package com.a29340.elements;
+
+import com.a29340.core.Entity;
+import com.a29340.core.PlayElement;
+import com.a29340.core.Velocity;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import static com.a29340.Constants.FRAME_SIZE;
-
-public class Beam extends Entity {
+public class Beam extends PlayElement {
     private Velocity velocity;
     private boolean hit = false;
     private static BufferedImage img;
@@ -21,16 +23,18 @@ public class Beam extends Entity {
 
     public Beam(Point position, Velocity velocity) {
         this.velocity = velocity;
-        this.position = position;
+        setPosition(position);
     }
 
     @Override
     public void update(Graphics2D graphics) {
+        Point position = getPosition();
         int dx = (int) (img.getWidth() * this.velocity.getDx()/this.velocity.getModule()) + 1;
         int x2 =  position.x + dx;
         int dy = (int) (img.getWidth() * this.velocity.getDy() / this.velocity.getModule()) + 1;
         int y2 =  position.y + dy;
         position = velocity.getTargetFromPoint(position);
+        setPosition(position);
         if (dx > 0 && dy > 0) {
             bounds = new Rectangle(position.x, position.y, dx , dy);
         } else if (dx < 0 && dy < 0) {
@@ -61,7 +65,9 @@ public class Beam extends Entity {
     }
 
     @Override
-    public void acceptCollision() {
-        hit = true;
+    public void acceptCollision(PlayElement collided) {
+        if (collided instanceof Asteroid) {
+            hit = true;
+        }
     }
 }

@@ -1,13 +1,14 @@
-package com.a29340;
+package com.a29340.core;
 
 import java.awt.*;
 
-import static com.a29340.Constants.FRAME_SIZE;
+import static com.a29340.utils.Constants.FRAME_SIZE;
 
-public abstract class Entity {
+public abstract class PlayElement extends Entity {
     protected Velocity velocity = new Velocity();
-    protected Point position = new Point();
     protected Rectangle bounds = new Rectangle();
+    public abstract boolean shouldBeRemoved();
+    public abstract void acceptCollision(PlayElement collided);
 
     public Velocity getVelocity() {
         return velocity;
@@ -15,19 +16,6 @@ public abstract class Entity {
 
     public void setVelocity(Velocity velocity) {
         this.velocity = velocity;
-    }
-
-    public Point getPosition() {
-        return position;
-    }
-
-    public void setPosition(Point position) {
-        this.position = position;
-    }
-
-    public void setPosition(int x, int y) {
-        this.position.x = x;
-        this.position.y = y;
     }
 
     public Rectangle getBounds() {
@@ -39,15 +27,10 @@ public abstract class Entity {
     }
 
     protected boolean isInFrame() {
+        Point position = this.getPosition();
         return position.x > FRAME_SIZE.width + 300
                 || position.x < - 300
                 || position.y > FRAME_SIZE.height + 300
-                || position.y < -300;
+                || position.y < - 300;
     }
-
-    public abstract void update(Graphics2D g2d);
-
-    public abstract boolean shouldBeRemoved();
-
-    public abstract void acceptCollision();
 }
