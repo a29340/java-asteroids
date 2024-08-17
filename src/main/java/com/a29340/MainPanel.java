@@ -5,6 +5,7 @@ import com.a29340.core.UIElement;
 import com.a29340.elements.Asteroid;
 import com.a29340.elements.HealthBar;
 import com.a29340.elements.Ship;
+import com.a29340.utils.Configurations;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -15,13 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.a29340.utils.Constants.FPS;
 import static com.a29340.utils.Constants.FRAME_SIZE;
 
 public class MainPanel extends JPanel {
     BufferedImage background;
     List<PlayElement> playElements = new ArrayList<>();
     List<UIElement> uiElements = new ArrayList<>();
-    long lastRepaint = System.currentTimeMillis();
 
     public MainPanel() {
         setSize(FRAME_SIZE);
@@ -32,7 +33,7 @@ public class MainPanel extends JPanel {
         HealthBar healthBar = configureDashboard();
         Ship ship = configureShip(healthBar);
         configureAsteroids(ship);
-        configureCollisions();
+        runGameLoop();
     }
 
     private HealthBar configureDashboard() {
@@ -67,8 +68,8 @@ public class MainPanel extends JPanel {
         return ship;
     }
 
-    private void configureCollisions() {
-        Timer timer = new Timer(16, e -> {
+    private void runGameLoop() {
+        Timer timer = new Timer(1000/FPS, e -> {
             detectCollision();
             repaint();
         });
@@ -90,9 +91,6 @@ public class MainPanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        long now = System.currentTimeMillis();
-        System.out.println("FPS: " + 1000/(now - lastRepaint));
-        lastRepaint = now;
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         if (background != null) {
@@ -105,6 +103,22 @@ public class MainPanel extends JPanel {
             e.update(g2d);
         });
         playElements = playElements.stream().filter(c -> !c.shouldBeRemoved()).collect(Collectors.toList());
+        DebugInfo.printFPS(g2d);
         g2d.dispose();
+    }
+
+    private class DebugInfo {
+        static long lastRepaint = System.currentTimeMillis();
+        static Font font = new Font("Arial", Font.PLAIN, 20);
+
+        static void printFPS(Graphics2D g2d) {
+            if (Configurations.debugMode()) {
+                long now = System.currentTimeMillis();
+                g2d.setColor(Color.CYAN);
+                g2d.setFont(font);
+                g2d.drawString("FPS: " + 1000/(now - lastRepaint), 5, FRAME_SIZE.height);
+                lastRepaint = now;
+            }
+        }
     }
 }
