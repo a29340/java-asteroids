@@ -6,6 +6,7 @@ import com.a29340.elements.Asteroid;
 import com.a29340.elements.HealthBar;
 import com.a29340.elements.Ship;
 import com.a29340.utils.Configurations;
+import com.a29340.utils.DebugInfo;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -84,6 +85,7 @@ public class MainPanel extends JPanel {
                 if (a!=b && a.getBounds().intersects(b.getBounds()))  {
                    a.acceptCollision(b);
                    b.acceptCollision(a);
+                   DebugInfo.printDebugMessage("Collision detected between " + a.getClass().getSimpleName() + " and " + b.getClass().getSimpleName());
                 }
             }
         }
@@ -103,22 +105,7 @@ public class MainPanel extends JPanel {
             e.update(g2d);
         });
         playElements = playElements.stream().filter(c -> !c.shouldBeRemoved()).collect(Collectors.toList());
-        DebugInfo.printFPS(g2d);
+        DebugInfo.print(g2d);
         g2d.dispose();
-    }
-
-    private class DebugInfo {
-        static long lastRepaint = System.currentTimeMillis();
-        static Font font = new Font("Arial", Font.PLAIN, 20);
-
-        static void printFPS(Graphics2D g2d) {
-            if (Configurations.debugMode()) {
-                long now = System.currentTimeMillis();
-                g2d.setColor(Color.CYAN);
-                g2d.setFont(font);
-                g2d.drawString("FPS: " + 1000/(now - lastRepaint), 5, FRAME_SIZE.height);
-                lastRepaint = now;
-            }
-        }
     }
 }

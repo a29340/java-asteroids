@@ -159,7 +159,7 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
 
     @Override
     public boolean shouldBeRemoved() {
-        return false;
+        return this.health.getHealth() < 1;
     }
 
     @Override
