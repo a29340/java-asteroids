@@ -19,7 +19,10 @@ public class DebugInfo {
             long now = System.currentTimeMillis();
             g2d.setColor(Color.CYAN);
             g2d.setFont(fpsFont);
-            g2d.drawString("FPS: " + 1000/(now - lastRepaint), 5, FRAME_SIZE.height);
+            long delta = now - lastRepaint;
+            if (delta > 0) {
+                g2d.drawString("FPS: " + 1000/ (delta), 5, FRAME_SIZE.height);
+            }
             printDebugMessages(g2d, now);
             lastRepaint = now;
         }
