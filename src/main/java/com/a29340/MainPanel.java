@@ -5,7 +5,6 @@ import com.a29340.core.UIElement;
 import com.a29340.elements.Asteroid;
 import com.a29340.elements.HealthBar;
 import com.a29340.elements.Ship;
-import com.a29340.utils.Configurations;
 import com.a29340.utils.DebugInfo;
 
 import javax.imageio.ImageIO;
@@ -95,6 +94,7 @@ public class MainPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
+        //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (background != null) {
             g2d.drawImage(background, 0, 0, this);
         }

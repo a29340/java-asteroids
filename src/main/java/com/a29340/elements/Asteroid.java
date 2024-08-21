@@ -1,28 +1,23 @@
 package com.a29340.elements;
 
-import com.a29340.core.Entity;
+import com.a29340.core.Image;
 import com.a29340.core.PlayElement;
 import com.a29340.core.Velocity;
+import com.a29340.utils.Graphics;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import static com.a29340.utils.Constants.FRAME_SIZE;
+import static com.a29340.utils.Constants.PIXEL_DIMENSION;
 
 public class Asteroid extends PlayElement {
     private boolean hit = false;
     private double scale;
     private double gamma = 0;
     private double dgamma;
-    private static BufferedImage img;
+    private static Image image;
     static {
-        try {
-            img = ImageIO.read(Entity.class.getClassLoader().getResource("images/asteroid.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+      image = new Image("images/asteroid.png");
     }
 
     public Asteroid(Point target) {
@@ -38,7 +33,7 @@ public class Asteroid extends PlayElement {
             randomPosition = new Point((int) (Math.random() * FRAME_SIZE.width), FRAME_SIZE.height + 250);
         }
         Velocity velocity = new Velocity((target.x - randomPosition.x)/100, (target.y - randomPosition.y)/100);
-        this.scale = Math.random() + 0.1;
+        this.scale = Math.random() + 0.5;
         this.dgamma = Math.random() / 10;
         setPosition(randomPosition);
         this.velocity = velocity;
@@ -52,23 +47,10 @@ public class Asteroid extends PlayElement {
     }
 
     @Override
-    public void update(Graphics2D graphics) {
-        Graphics2D g2d = (Graphics2D) graphics.create();
+    public void updatePlayElement(Graphics2D g2d) {
         gamma += dgamma;
-        Point position = velocity.getTargetFromPoint(getPosition());
-        setPosition(position);
-        bounds = new Rectangle(position.x - (int) (img.getWidth() * scale)/2,
-                position.y - (int) (img.getHeight() * scale)/2,
-                (int) (img.getWidth() * scale),
-                (int) (img.getHeight() * scale));
-        // Translate to the center of the component
-        g2d.translate(position.x, position.y);
         g2d.scale(scale, scale);
-        // Rotate around the center
-        g2d.rotate(gamma);
-//        graphics.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
-        g2d.drawImage(img, - img.getWidth()/2, - img.getHeight() / 2, null);
-        g2d.dispose();
+        drawPlayElement(g2d, image, gamma);
     }
 
     @Override
