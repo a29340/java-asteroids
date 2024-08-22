@@ -47,7 +47,11 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
 
     private void fireBeam() {
         Point position = getPosition();
-        Beam beam = new Beam(new Point(position.x, position.y), new Velocity(angle, 10));
+        // added these v and u to create some space between the center of the ship and the center of the beam
+        int v = (int) (Math.sin(angle) * image.getWidth() * PIXEL_DIMENSION * 0.60);
+        int u = (int) (Math.cos(angle) * image.getHeight() * PIXEL_DIMENSION * 0.60);
+        Beam beam = new Beam(new Point(position.x + v,position.y - u),
+                new Velocity(angle, 10));
         this.beamFunction.accept(beam);
     }
 

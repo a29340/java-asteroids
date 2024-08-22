@@ -11,7 +11,9 @@ import static com.a29340.utils.Constants.PIXEL_DIMENSION;
 public abstract class PlayElement extends Entity {
     protected Velocity velocity = new Velocity();
     protected Rectangle bounds = new Rectangle();
+
     public abstract boolean shouldBeRemoved();
+
     public abstract void acceptCollision(PlayElement collided);
 
     public Velocity getVelocity() {
@@ -33,9 +35,9 @@ public abstract class PlayElement extends Entity {
     protected boolean isInFrame() {
         Point position = this.getPosition();
         return position.x > FRAME_SIZE.width + 300
-                || position.x < - 300
+                || position.x < -300
                 || position.y > FRAME_SIZE.height + 300
-                || position.y < - 300;
+                || position.y < -300;
     }
 
     @Override
@@ -58,8 +60,8 @@ public abstract class PlayElement extends Entity {
         g2d.translate(position.x, position.y);
         // Rotate around the center
         g2d.rotate(angle);
-        Graphics.drawImage(g2d, image, new Point(- PIXEL_DIMENSION * image.getWidth() / 2, - PIXEL_DIMENSION * image.getHeight() / 2));
+        Graphics.drawImage(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2));
         g2d.translate(-position.x, -position.y);
-        bounds.setBounds(position.x - PIXEL_DIMENSION * image.getWidth() / 2, position.y - PIXEL_DIMENSION * image.getHeight() / 2, PIXEL_DIMENSION  * image.getWidth(), PIXEL_DIMENSION * image.getHeight());
+        bounds.setBounds(position.x - PIXEL_DIMENSION * image.getWidth() / 2, position.y - PIXEL_DIMENSION * image.getHeight() / 2, PIXEL_DIMENSION * image.getWidth(), PIXEL_DIMENSION * image.getHeight());
     }
 }

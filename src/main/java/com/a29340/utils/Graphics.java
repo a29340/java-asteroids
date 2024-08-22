@@ -4,9 +4,11 @@ import com.a29340.core.Image;
 
 import java.awt.*;
 
+import static com.a29340.utils.Constants.DISPERSION;
 import static com.a29340.utils.Constants.PIXEL_DIMENSION;
 
 public final class Graphics {
+
 
     private static void drawPixel(Graphics2D g2d, Point position, Color color) {
         g2d.setColor(color);
@@ -23,6 +25,25 @@ public final class Graphics {
                 int index = i * height + j;
                 Color color = colors[index];
                 drawPixel(g2d, pixelPosition, color);
+            }
+        }
+    }
+
+    public static void drawExplosion(Graphics2D g2d, Image image, Point position, int frame, int numFrame) {
+        int height = image.getHeight();
+        int width = image.getWidth();
+        float perc = frame/(float) numFrame;
+        Color[] colors = image.getColors();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                double dispersionx = (Math.random() - 0.5) * perc * DISPERSION;
+                double dispersiony = (Math.random() - 0.5) * perc * DISPERSION;
+                Point pixelPosition = new Point((int) (position.x + i * PIXEL_DIMENSION + dispersionx),
+                        (int) (position.y + j * PIXEL_DIMENSION + dispersiony));
+                int index = i * height + j;
+                Color color = colors[index];
+                int newAlpha = (int) (color.getAlpha() * (1 - perc));
+                drawPixel(g2d, pixelPosition, new Color(color.getRed(), color.getGreen(), color.getBlue(), newAlpha));
             }
         }
     }
