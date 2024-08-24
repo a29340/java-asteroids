@@ -3,22 +3,18 @@ package com.a29340.elements;
 import com.a29340.core.Image;
 import com.a29340.core.PlayElement;
 import com.a29340.core.Velocity;
-import com.a29340.utils.Graphics;
 
 import java.awt.*;
 
-import static com.a29340.utils.Constants.*;
-import static com.a29340.utils.Constants.PIXEL_DIMENSION;
+import static com.a29340.utils.Constants.ASTEROID_EXPLOSION_FRAMES;
+import static com.a29340.utils.Constants.FRAME_SIZE;
 
 public class Asteroid extends PlayElement {
     private boolean hit = false;
     private int frame = 0;
     private double scale = 1;
     private double dgamma;
-    private static Image image;
-    static {
-      image = new Image("images/asteroid.png");
-    }
+    private static Image image = new Image("images/asteroid.png");
 
     public Asteroid(Point target) {
         double side = Math.random();
@@ -33,22 +29,14 @@ public class Asteroid extends PlayElement {
             randomPosition = new Point((int) (Math.random() * FRAME_SIZE.width), FRAME_SIZE.height + 250);
         }
         Velocity velocity = new Velocity((target.x - randomPosition.x)/100, (target.y - randomPosition.y)/100);
-//        this.scale = Math.random() + 0.5;
+        this.scale = Math.random() + 0.5;
         this.dgamma = Math.random() / 10;
         setPosition(randomPosition);
         this.velocity = velocity;
     }
 
-    public Asteroid(Point position, Velocity velocity, double scale, double dgamma) {
-        this.scale = scale;
-        this.dgamma = dgamma;
-        setPosition(position);
-        this.velocity = velocity;
-    }
-
     @Override
     public void updatePlayElement(Graphics2D g2d) {
-        g2d.scale(scale, scale);
         if (!hit) {
             angle += dgamma;
             drawPlayElement(g2d, image);
@@ -57,8 +45,6 @@ public class Asteroid extends PlayElement {
             drawExplosion(g2d, image, frame, ASTEROID_EXPLOSION_FRAMES);
         }
     }
-
-
 
     @Override
     public boolean shouldBeRemoved() {
