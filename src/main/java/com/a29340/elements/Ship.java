@@ -18,9 +18,6 @@ import static com.a29340.utils.Constants.*;
 
 
 public class Ship extends PlayElement implements MouseMotionListener, MouseInputListener, KeyListener {
-    private static final int VEL_STEP = 5;
-
-    BufferedImage img;
 
     private Consumer<PlayElement> beamFunction;
     private HealthBar health;
@@ -79,16 +76,16 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyChar()) {
             case 's':
-                this.velocity.increaseY(VEL_STEP);
+                this.velocity.increaseY(SHIP_VEL_STEP);
                 break;
             case 'w':
-                this.velocity.increaseY(-VEL_STEP);
+                this.velocity.increaseY(-SHIP_VEL_STEP);
                 break;
             case 'a':
-                this.velocity.increaseX(-VEL_STEP);
+                this.velocity.increaseX(-SHIP_VEL_STEP);
                 break;
             case 'd':
-                this.velocity.increaseX(+VEL_STEP);
+                this.velocity.increaseX(+SHIP_VEL_STEP);
                 break;
             case ' ':
                 fireBeam();
