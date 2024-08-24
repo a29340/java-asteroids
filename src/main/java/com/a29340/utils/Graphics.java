@@ -6,8 +6,7 @@ import com.a29340.core.Velocity;
 
 import java.awt.*;
 
-import static com.a29340.utils.Constants.DISPERSION_RATE;
-import static com.a29340.utils.Constants.PIXEL_DIMENSION;
+import static com.a29340.utils.Constants.*;
 
 public final class Graphics {
 
@@ -21,7 +20,6 @@ public final class Graphics {
         int height = image.getHeight();
         int width = image.getWidth();
         Pixel[] pixels = image.getPixels();
-        pixels = applyFilters(pixels, width, height);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 Point pixelPosition = new Point(position.x + i * PIXEL_DIMENSION, position.y + j * PIXEL_DIMENSION);
@@ -30,11 +28,6 @@ public final class Graphics {
                 drawPixel(g2d, pixelPosition, color);
             }
         }
-    }
-
-    private static Pixel[] applyFilters(Pixel[] pixels, int width, int height) {
-
-        return pixels;
     }
 
     public static void drawExplosion(Graphics2D g2d, Image image, Point position, int frame, int numFrame) {
@@ -55,6 +48,21 @@ public final class Graphics {
                 Color color = pixel.getColor();
                 int newAlpha = (int) (color.getAlpha() * (1 - perc));
                 drawPixel(g2d, pixelPosition, new Color(color.getRed(), color.getGreen(), color.getBlue(), newAlpha));
+            }
+        }
+    }
+
+    public static void drawCooldown(Graphics2D g2d, Image image, Point position, int frame, int numFrame) {
+        int height = image.getHeight();
+        int width = image.getWidth();
+        Pixel[] pixels = image.getPixels();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                int index = i * height + j;
+                Pixel pixel = pixels[index];
+                Point pixelPosition = new Point(position.x + i * PIXEL_DIMENSION, position.y + j * PIXEL_DIMENSION);                Color color = pixel.getColor();
+                int red = frame % 10 < 5 ? color.getRed() : Math.min(color.getRed() + 150, 255);
+                drawPixel(g2d, pixelPosition, new Color(red, color.getGreen(), color.getBlue(), color.getAlpha()));
             }
         }
     }

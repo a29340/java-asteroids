@@ -54,28 +54,34 @@ public abstract class PlayElement extends Entity {
     public abstract void updatePlayElement(Graphics2D g2d);
 
     protected void drawPlayElement(Graphics2D g2d, Image image) {
-        Point position = getPosition();
-        position.setLocation(velocity.getTargetFromPoint(position));
-        // Translate to the center of the component
-        g2d.translate(position.x, position.y);
-        // Rotate around the center
-        g2d.rotate(angle);
+        Point position = transform(g2d);
         Graphics.drawImage(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2));
-        g2d.translate(-position.x, -position.y);
-        bounds.setBounds(position.x - PIXEL_DIMENSION * image.getWidth() / 2,
-                position.y - PIXEL_DIMENSION * image.getHeight() / 2,
-                PIXEL_DIMENSION * image.getWidth(),
-                PIXEL_DIMENSION * image.getHeight());
+        untrasform(g2d, image, position);
     }
 
     protected void drawExplosion(Graphics2D g2d, Image image, int frame, int explosionFrame) {
+        Point position = transform(g2d);
+        Graphics.drawExplosion(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2), frame, explosionFrame);
+        untrasform(g2d, image, position);
+    }
+
+    protected void drawCooldown(Graphics2D g2d, Image image, int frame, int cooldownFrame) {
+        Point position = transform(g2d);
+        Graphics.drawCooldown(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2), frame, cooldownFrame);
+        untrasform(g2d, image, position);
+    }
+
+    private Point transform(Graphics2D g2d) {
         Point position = getPosition();
         position.setLocation(velocity.getTargetFromPoint(position));
         // Translate to the center of the component
         g2d.translate(position.x, position.y);
         // Rotate around the center
         g2d.rotate(angle);
-        Graphics.drawExplosion(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2), frame, explosionFrame);
+        return position;
+    }
+
+    private void untrasform(Graphics2D g2d, Image image, Point position) {
         g2d.translate(-position.x, -position.y);
         bounds.setBounds(position.x - PIXEL_DIMENSION * image.getWidth() / 2,
                 position.y - PIXEL_DIMENSION * image.getHeight() / 2,

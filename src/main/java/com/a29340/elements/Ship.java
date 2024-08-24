@@ -3,8 +3,6 @@ package com.a29340.elements;
 import com.a29340.core.Image;
 import com.a29340.core.PlayElement;
 import com.a29340.core.Velocity;
-import com.a29340.utils.DebugInfo;
-import com.a29340.utils.Graphics;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
@@ -129,30 +127,32 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
 
     @Override
     public void updatePlayElement(Graphics2D g2d) {
-        Point position = getPosition();
-        position.setLocation(velocity.getTargetFromPoint(position));
-        if (position.x < 0) {
-            position.x = 0;
-            velocity.setDx(0);
-        }
-        if (position.y < 0) {
-            position.y = 0;
-            velocity.setDy(0);
-        }
-        if (position.x > FRAME_SIZE.width) {
-            position.x = FRAME_SIZE.width;
-            velocity.setDx(0);
-        }
-        if (position.y > FRAME_SIZE.height) {
-            position.y = FRAME_SIZE.height;
-            velocity.setDy(0);
+        if (isAlive()) {
+            Point position = getPosition();
+            position.setLocation(velocity.getTargetFromPoint(position));
+            if (position.x < 0) {
+                position.x = 0;
+                velocity.setDx(0);
+            }
+            if (position.y < 0) {
+                position.y = 0;
+                velocity.setDy(0);
+            }
+            if (position.x > FRAME_SIZE.width) {
+                position.x = FRAME_SIZE.width;
+                velocity.setDx(0);
+            }
+            if (position.y > FRAME_SIZE.height) {
+                position.y = FRAME_SIZE.height;
+                velocity.setDy(0);
+            }
         }
         if (explosionFrame > 0) {
             explosionFrame = explosionFrame >= SHIP_EXPLOSION_FRAMES ? 0 : explosionFrame + 1;
             drawExplosion(g2d, image, explosionFrame, SHIP_EXPLOSION_FRAMES);
         } else if (coolDownFrame > 0) {
             coolDownFrame = coolDownFrame >= SHIP_COOLDOWN_FRAMES ? 0 : coolDownFrame + 1;
-            drawPlayElement(g2d, image);
+            drawCooldown(g2d, image, coolDownFrame, SHIP_COOLDOWN_FRAMES);
         } else {
             drawPlayElement(g2d, image);
         }
