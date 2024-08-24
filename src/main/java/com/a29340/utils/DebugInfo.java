@@ -1,5 +1,7 @@
 package com.a29340.utils;
 
+import com.a29340.elements.Ship;
+
 import java.awt.*;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,8 +23,8 @@ public class DebugInfo {
             g2d.setFont(fpsFont);
             if (now - lastRepaint > 0) {
                 g2d.drawString("FPS: " + 1000/(now - lastRepaint), 5, FRAME_SIZE.height);
+                printDebugMessages(g2d, now);
             }
-            printDebugMessages(g2d, now);
             lastRepaint = now;
         }
     }

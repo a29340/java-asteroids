@@ -13,6 +13,7 @@ public class Beam extends PlayElement {
 
     public Beam(Point position, Velocity velocity) {
         this.velocity = velocity;
+        this.angle = velocity.getAngle();
         setPosition(position);
     }
 
@@ -20,8 +21,7 @@ public class Beam extends PlayElement {
     public void updatePlayElement(Graphics2D g2d) {
         Point position = getPosition();
         position.setLocation(velocity.getTargetFromPoint(position));
-        double angle = velocity.getAngle();
-        drawPlayElement(g2d, image, angle);
+        drawPlayElement(g2d, image);
     }
 
     @Override

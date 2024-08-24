@@ -13,9 +13,7 @@ import static com.a29340.utils.Constants.PIXEL_DIMENSION;
 public class Asteroid extends PlayElement {
     private boolean hit = false;
     private int frame = 0;
-    private final int animationFrames = 1 * FPS;
     private double scale = 1;
-    private double gamma = 0;
     private double dgamma;
     private static Image image;
     static {
@@ -51,26 +49,20 @@ public class Asteroid extends PlayElement {
     @Override
     public void updatePlayElement(Graphics2D g2d) {
         g2d.scale(scale, scale);
-        gamma += dgamma;
         if (!hit) {
-            drawPlayElement(g2d, image, gamma);
+            angle += dgamma;
+            drawPlayElement(g2d, image);
         } else {
             frame += 1;
-            Point position = getPosition();
-            position.setLocation(velocity.getTargetFromPoint(position));
-            // Translate to the center of the component
-            g2d.translate(position.x, position.y);
-            // Rotate around the center
-            g2d.rotate(gamma);
-            Graphics.drawExplosion(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2), frame, animationFrames);
-            g2d.translate(-position.x, -position.y);
-            bounds.setBounds(position.x - PIXEL_DIMENSION * image.getWidth() / 2, position.y - PIXEL_DIMENSION * image.getHeight() / 2, PIXEL_DIMENSION * image.getWidth(), PIXEL_DIMENSION * image.getHeight());
+            drawExplosion(g2d, image, frame, ASTEROID_EXPLOSION_FRAMES);
         }
     }
 
+
+
     @Override
     public boolean shouldBeRemoved() {
-        return frame == animationFrames || isInFrame();
+        return frame == ASTEROID_EXPLOSION_FRAMES || isInFrame();
     }
 
     @Override

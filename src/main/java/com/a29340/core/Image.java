@@ -11,17 +11,17 @@ public class Image {
 
     private int frame = 0;
     private BufferedImage image;
-    private List<Color[]> frames = new ArrayList<>();
+    private List<Pixel[]> frames = new ArrayList<>();
 
     public Image(String path) {
         try {
             this.image = ImageIO.read(getClass().getClassLoader().getResource(path));
-            Color[] firstFrame = new Color[image.getWidth() * image.getHeight()];
+            Pixel[] firstFrame = new Pixel[image.getWidth() * image.getHeight()];
             for (int i = 0; i < image.getWidth(); i++) {
                 for (int j = 0; j < image.getHeight(); j++) {
-                    int[] pixel = this.image.getData().getPixel(i, j, (int[]) null);
-                    Color color = new Color(pixel[0], pixel[1], pixel[2], pixel[3]);
-                    firstFrame[i * image.getHeight() + j] = color;
+                    int[] rgba = this.image.getData().getPixel(i, j, (int[]) null);
+                    Pixel pixel = new Pixel(new Color(rgba[0], rgba[1], rgba[2], rgba[3]));
+                    firstFrame[i * image.getHeight() + j] = pixel;
                 }
             }
             frames.add(firstFrame);
@@ -30,8 +30,8 @@ public class Image {
         }
     }
 
-    public Color[] getColors() {
-        Color[] colors = frames.get(frame);
+    public Pixel[] getPixels() {
+        Pixel[] colors = frames.get(frame);
         if (frame < frames.size() - 1) {
             frame = frame + 1;
         } else {

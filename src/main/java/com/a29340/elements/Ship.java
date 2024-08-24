@@ -3,6 +3,7 @@ package com.a29340.elements;
 import com.a29340.core.Image;
 import com.a29340.core.PlayElement;
 import com.a29340.core.Velocity;
+import com.a29340.utils.DebugInfo;
 import com.a29340.utils.Graphics;
 
 import javax.swing.*;
@@ -15,19 +16,19 @@ import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.util.function.Consumer;
 
-import static com.a29340.utils.Constants.FRAME_SIZE;
-import static com.a29340.utils.Constants.PIXEL_DIMENSION;
+import static com.a29340.utils.Constants.*;
 
 
 public class Ship extends PlayElement implements MouseMotionListener, MouseInputListener, KeyListener {
     private static final int VEL_STEP = 5;
 
     BufferedImage img;
-    // Angle in rads
-    private double angle = 0;
+
     private Consumer<PlayElement> beamFunction;
     private HealthBar health;
     private Image image = new Image("images/ship-pixel.png");
+    private int coolDownFrame = 0;
+    private int explosionFrame = 0;
 
     public Ship(HealthBar health, Consumer<PlayElement> beamFunction) {
         this.health = health;
@@ -46,13 +47,15 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
     }
 
     private void fireBeam() {
-        Point position = getPosition();
-        // added these v and u to create some space between the center of the ship and the center of the beam
-        int v = (int) (Math.sin(angle) * image.getWidth() * PIXEL_DIMENSION * 0.60);
-        int u = (int) (Math.cos(angle) * image.getHeight() * PIXEL_DIMENSION * 0.60);
-        Beam beam = new Beam(new Point(position.x + v,position.y - u),
-                new Velocity(angle, 10));
-        this.beamFunction.accept(beam);
+        if (isAlive()) {
+            Point position = getPosition();
+            // added these v and u to create some space between the center of the ship and the center of the beam
+            int v = (int) (Math.sin(angle) * image.getWidth() * PIXEL_DIMENSION * 0.60);
+            int u = (int) (Math.cos(angle) * image.getHeight() * PIXEL_DIMENSION * 0.60);
+            Beam beam = new Beam(new Point(position.x + v,position.y - u),
+                    new Velocity(angle, 10));
+            this.beamFunction.accept(beam);
+        }
     }
 
     @Override
@@ -62,10 +65,12 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        Point position = getPosition();
-        int dx = e.getX() - (position.x);
-        int dy = e.getY() - (position.y);
-        angle = Math.atan2(dy, dx) + Math.PI / 2;
+        if (isAlive()) {
+            Point position = getPosition();
+            int dx = e.getX() - (position.x);
+            int dy = e.getY() - (position.y);
+            angle = Math.atan2(dy, dx) + Math.PI / 2;
+        }
     }
 
     @Override
@@ -142,18 +147,35 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
             position.y = FRAME_SIZE.height;
             velocity.setDy(0);
         }
-        drawPlayElement(g2d, image, angle);
+        if (explosionFrame > 0) {
+            explosionFrame = explosionFrame >= SHIP_EXPLOSION_FRAMES ? 0 : explosionFrame + 1;
+            drawExplosion(g2d, image, explosionFrame, SHIP_EXPLOSION_FRAMES);
+        } else if (coolDownFrame > 0) {
+            coolDownFrame = coolDownFrame >= SHIP_COOLDOWN_FRAMES ? 0 : coolDownFrame + 1;
+            drawPlayElement(g2d, image);
+        } else {
+            drawPlayElement(g2d, image);
+        }
     }
 
     @Override
     public boolean shouldBeRemoved() {
-        return this.health.getHealth() < 1;
+        return this.explosionFrame >= SHIP_EXPLOSION_FRAMES;
     }
 
     @Override
     public void acceptCollision(PlayElement collided) {
-        if (collided instanceof Asteroid) {
+        if (collided instanceof Asteroid && explosionFrame == 0 && coolDownFrame == 0) {
             this.health.setHealth(this.health.getHealth() - 10);
+            if (!isAlive()) {
+                explosionFrame = 1;
+            } else {
+                coolDownFrame = 1;
+            }
         }
+    }
+
+    private boolean isAlive() {
+        return this.health.getHealth() > 0;
     }
 }

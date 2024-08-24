@@ -44,7 +44,7 @@ public class MainPanel extends JPanel {
 
     private void configureBackground() {
         try {
-            background = ImageIO.read(getClass().getClassLoader().getResource("images/background.png"));
+            background = ImageIO.read(getClass().getClassLoader().getResource("images/background-pixel.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,10 +94,7 @@ public class MainPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        //g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        if (background != null) {
-            g2d.drawImage(background, 0, 0, this);
-        }
+        drawBackground(g2d);
         playElements.forEach(c -> {
             c.update(g2d);
         });
@@ -107,5 +104,19 @@ public class MainPanel extends JPanel {
         playElements = playElements.stream().filter(c -> !c.shouldBeRemoved()).collect(Collectors.toList());
         DebugInfo.print(g2d);
         g2d.dispose();
+    }
+
+    private void drawBackground(Graphics2D g2d) {
+        if (background != null) {
+            int x = 0;
+            while (x < FRAME_SIZE.getWidth()) {
+                int y = 0;
+                while (y < FRAME_SIZE.getHeight()) {
+                    g2d.drawImage(background, x, y, this);
+                    y += background.getHeight();
+                }
+                x += background.getWidth();
+            }
+        }
     }
 }

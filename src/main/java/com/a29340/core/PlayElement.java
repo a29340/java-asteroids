@@ -5,12 +5,12 @@ import com.a29340.utils.Graphics;
 
 import java.awt.*;
 
-import static com.a29340.utils.Constants.FRAME_SIZE;
-import static com.a29340.utils.Constants.PIXEL_DIMENSION;
+import static com.a29340.utils.Constants.*;
 
 public abstract class PlayElement extends Entity {
     protected Velocity velocity = new Velocity();
     protected Rectangle bounds = new Rectangle();
+    protected double angle = 0;
 
     public abstract boolean shouldBeRemoved();
 
@@ -53,7 +53,7 @@ public abstract class PlayElement extends Entity {
 
     public abstract void updatePlayElement(Graphics2D g2d);
 
-    protected void drawPlayElement(Graphics2D g2d, Image image, double angle) {
+    protected void drawPlayElement(Graphics2D g2d, Image image) {
         Point position = getPosition();
         position.setLocation(velocity.getTargetFromPoint(position));
         // Translate to the center of the component
@@ -62,6 +62,24 @@ public abstract class PlayElement extends Entity {
         g2d.rotate(angle);
         Graphics.drawImage(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2));
         g2d.translate(-position.x, -position.y);
-        bounds.setBounds(position.x - PIXEL_DIMENSION * image.getWidth() / 2, position.y - PIXEL_DIMENSION * image.getHeight() / 2, PIXEL_DIMENSION * image.getWidth(), PIXEL_DIMENSION * image.getHeight());
+        bounds.setBounds(position.x - PIXEL_DIMENSION * image.getWidth() / 2,
+                position.y - PIXEL_DIMENSION * image.getHeight() / 2,
+                PIXEL_DIMENSION * image.getWidth(),
+                PIXEL_DIMENSION * image.getHeight());
+    }
+
+    protected void drawExplosion(Graphics2D g2d, Image image, int frame, int explosionFrame) {
+        Point position = getPosition();
+        position.setLocation(velocity.getTargetFromPoint(position));
+        // Translate to the center of the component
+        g2d.translate(position.x, position.y);
+        // Rotate around the center
+        g2d.rotate(angle);
+        Graphics.drawExplosion(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2), frame, explosionFrame);
+        g2d.translate(-position.x, -position.y);
+        bounds.setBounds(position.x - PIXEL_DIMENSION * image.getWidth() / 2,
+                position.y - PIXEL_DIMENSION * image.getHeight() / 2,
+                PIXEL_DIMENSION * image.getWidth(),
+                PIXEL_DIMENSION * image.getHeight());
     }
 }
