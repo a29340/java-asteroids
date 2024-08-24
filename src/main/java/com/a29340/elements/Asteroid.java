@@ -37,6 +37,7 @@ public class Asteroid extends PlayElement {
 
     @Override
     public void updatePlayElement(Graphics2D g2d) {
+        g2d.scale(scale, scale);
         if (!hit) {
             angle += dgamma;
             drawPlayElement(g2d, image);

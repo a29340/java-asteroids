@@ -47,6 +47,8 @@ public abstract class PlayElement extends Entity {
         if (Configurations.debugMode()) {
             g2d.setColor(Color.RED);
             g2d.draw(bounds);
+            g2d1.setColor(Color.GREEN);
+            g2d1.draw(bounds);
         }
         g2d1.dispose();
     }
