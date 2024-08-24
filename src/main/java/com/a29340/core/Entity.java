@@ -1,8 +1,9 @@
 package com.a29340.core;
 
+import javax.swing.*;
 import java.awt.*;
 
-public abstract class Entity {
+public abstract class Entity extends JComponent {
     private Point position = new Point();
 
     public Point getPosition() {
@@ -17,8 +18,6 @@ public abstract class Entity {
         this.position.x = x;
         this.position.y = y;
     }
-
-    public abstract void update(Graphics2D g2d);
 
 
 }

@@ -41,14 +41,14 @@ public abstract class PlayElement extends Entity {
     }
 
     @Override
-    public void update(Graphics2D g2d) {
-        Graphics2D g2d1 = (Graphics2D) g2d.create();
-        updatePlayElement(g2d1);
+    protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        updatePlayElement(g2d);
         if (Configurations.debugMode()) {
             g2d.setColor(Color.RED);
             g2d.draw(bounds);
         }
-        g2d1.dispose();
     }
 
     public abstract void updatePlayElement(Graphics2D g2d);

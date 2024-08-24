@@ -15,6 +15,7 @@ public class Beam extends PlayElement {
         this.velocity = velocity;
         this.angle = velocity.getAngle();
         setPosition(position);
+        repaint();
     }
 
     @Override

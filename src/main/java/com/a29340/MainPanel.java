@@ -23,6 +23,7 @@ public class MainPanel extends JPanel {
     BufferedImage background;
     List<PlayElement> playElements = new ArrayList<>();
     List<UIElement> uiElements = new ArrayList<>();
+    private static MainPanel INSTANCE;
 
     public MainPanel() {
         setSize(FRAME_SIZE);
@@ -34,11 +35,13 @@ public class MainPanel extends JPanel {
         Ship ship = configureShip(healthBar);
         configureAsteroids(ship);
         runGameLoop();
+        INSTANCE = this;
     }
 
     private HealthBar configureDashboard() {
         HealthBar healthBar = new HealthBar();
         uiElements.add(healthBar);
+        this.add(healthBar);
         return healthBar;
     }
 
@@ -52,16 +55,20 @@ public class MainPanel extends JPanel {
 
     private void configureAsteroids(Ship ship) {
         Timer asteroidTimer = new Timer(1000, e -> {
-            playElements.add(new Asteroid(ship.getPosition()));
+            Asteroid asteroid = new Asteroid(ship.getPosition());
+            playElements.add(asteroid);
+            INSTANCE.add(asteroid);
         });
-        asteroidTimer.start();
+//        asteroidTimer.start();
     }
 
     private Ship configureShip(HealthBar healthBar) {
         Ship ship = new Ship(healthBar, beam -> {
             playElements.add(beam);
+            INSTANCE.add(beam);
         });
         playElements.add(ship);
+        this.add(ship);
         addKeyListener(ship);
         addMouseMotionListener(ship);
         addMouseListener(ship);
@@ -96,14 +103,17 @@ public class MainPanel extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         drawBackground(g2d);
         playElements.forEach(c -> {
-            c.update(g2d);
+            c.paint(g);
+            System.out.println(c);
+//            c.repaint();
         });
         uiElements.forEach(e -> {
-            e.update(g2d);
+            e.paint(g);
+//            e.repaint();
         });
-        playElements = playElements.stream().filter(c -> !c.shouldBeRemoved()).collect(Collectors.toList());
+//        List<PlayElement> elementsToRemove = playElements.stream().filter(c -> c.shouldBeRemoved()).collect(Collectors.toList());
+  //      elementsToRemove.forEach(e -> this.remove(e));
         DebugInfo.print(g2d);
-        g2d.dispose();
     }
 
     private void drawBackground(Graphics2D g2d) {
