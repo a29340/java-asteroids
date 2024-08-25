@@ -12,7 +12,6 @@ import static com.a29340.utils.Constants.FRAME_SIZE;
 public class Asteroid extends PlayElement {
     private boolean hit = false;
     private int frame = 0;
-    private double scale = 1;
     private double dgamma;
     private static Image image = new Image("images/asteroid.png");
 
@@ -37,7 +36,6 @@ public class Asteroid extends PlayElement {
 
     @Override
     public void updatePlayElement(Graphics2D g2d) {
-        g2d.scale(scale, scale);
         if (!hit) {
             angle += dgamma;
             drawPlayElement(g2d, image);

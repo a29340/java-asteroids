@@ -21,12 +21,14 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
     private Consumer<PlayElement> beamFunction;
     private HealthBar health;
     private Image image = new Image("images/ship-pixel.png");
+    private Point mousePosition = MouseInfo.getPointerInfo().getLocation();
     private int coolDownFrame = 0;
     private int explosionFrame = 0;
 
     public Ship(HealthBar health, Consumer<PlayElement> beamFunction) {
         this.health = health;
         this.beamFunction = beamFunction;
+        this.scale= 0.7;
         Timer slowDownTimer = new Timer(150, e -> {
             if (velocity.getModule() > 0) {
                 velocity.increaseX((int) (-velocity.getDx() / velocity.getModule()));
@@ -60,10 +62,8 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
     @Override
     public void mouseMoved(MouseEvent e) {
         if (isAlive()) {
-            Point position = getPosition();
-            int dx = e.getX() - (position.x);
-            int dy = e.getY() - (position.y);
-            angle = Math.atan2(dy, dx) + Math.PI / 2;
+            this.mousePosition = e.getPoint();
+            updateAngle();
         }
     }
 
@@ -126,6 +126,7 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
         if (isAlive()) {
             Point position = getPosition();
             position.setLocation(velocity.getTargetFromPoint(position));
+            updateAngle();
             if (position.x < 0) {
                 position.x = 0;
                 velocity.setDx(0);
@@ -169,6 +170,12 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
                 coolDownFrame = 1;
             }
         }
+    }
+
+    private void updateAngle() {
+        double dx = mousePosition.getX() - getPosition().x;
+        double dy = mousePosition.getY() - getPosition().y;
+        angle = Math.atan2(dy, dx) + Math.PI / 2;
     }
 
     private boolean isAlive() {

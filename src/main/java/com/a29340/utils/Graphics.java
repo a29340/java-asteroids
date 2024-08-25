@@ -19,7 +19,7 @@ public final class Graphics {
     public static void drawImage(Graphics2D g2d, Image image, Point position) {
         int height = image.getHeight();
         int width = image.getWidth();
-        Pixel[] pixels = image.getPixels();
+        Pixel[] pixels = image.getPixels(0);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 Point pixelPosition = new Point(position.x + i * PIXEL_DIMENSION, position.y + j * PIXEL_DIMENSION);
@@ -34,7 +34,7 @@ public final class Graphics {
         int height = image.getHeight();
         int width = image.getWidth();
         float perc = frame/(float) numFrame;
-        Pixel[] pixels = image.getPixels();
+        Pixel[] pixels = image.getPixels(0);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 int index = i * height + j;
@@ -55,7 +55,7 @@ public final class Graphics {
     public static void drawCooldown(Graphics2D g2d, Image image, Point position, int frame, int numFrame) {
         int height = image.getHeight();
         int width = image.getWidth();
-        Pixel[] pixels = image.getPixels();
+        Pixel[] pixels = image.getPixels(0);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 int index = i * height + j;

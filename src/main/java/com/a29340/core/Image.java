@@ -9,7 +9,6 @@ import java.util.List;
 
 public class Image {
 
-    private int frame = 0;
     private BufferedImage image;
     private List<Pixel[]> frames = new ArrayList<>();
 
@@ -30,13 +29,8 @@ public class Image {
         }
     }
 
-    public Pixel[] getPixels() {
+    public Pixel[] getPixels(int frame) {
         Pixel[] colors = frames.get(frame);
-        if (frame < frames.size() - 1) {
-            frame = frame + 1;
-        } else {
-            frame = 0;
-        }
         return colors;
     }
 

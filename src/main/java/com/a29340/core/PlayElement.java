@@ -11,6 +11,7 @@ public abstract class PlayElement extends Entity {
     protected Velocity velocity = new Velocity();
     protected Rectangle bounds = new Rectangle();
     protected double angle = 0;
+    protected double scale = 1;
 
     public abstract boolean shouldBeRemoved();
 
@@ -47,8 +48,6 @@ public abstract class PlayElement extends Entity {
         if (Configurations.debugMode()) {
             g2d.setColor(Color.RED);
             g2d.draw(bounds);
-            g2d1.setColor(Color.GREEN);
-            g2d1.draw(bounds);
         }
         g2d1.dispose();
     }
@@ -56,38 +55,35 @@ public abstract class PlayElement extends Entity {
     public abstract void updatePlayElement(Graphics2D g2d);
 
     protected void drawPlayElement(Graphics2D g2d, Image image) {
-        Point position = transform(g2d);
+        Point position = transform(g2d, image);
         Graphics.drawImage(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2));
-        untrasform(g2d, image, position);
+        g2d.translate(-position.x, -position.y);
     }
 
     protected void drawExplosion(Graphics2D g2d, Image image, int frame, int explosionFrame) {
-        Point position = transform(g2d);
+        Point position = transform(g2d, image);
         Graphics.drawExplosion(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2), frame, explosionFrame);
-        untrasform(g2d, image, position);
+        g2d.translate(-position.x, -position.y);
     }
 
     protected void drawCooldown(Graphics2D g2d, Image image, int frame, int cooldownFrame) {
-        Point position = transform(g2d);
+        Point position = transform(g2d, image);
         Graphics.drawCooldown(g2d, image, new Point(-PIXEL_DIMENSION * image.getWidth() / 2, -PIXEL_DIMENSION * image.getHeight() / 2), frame, cooldownFrame);
-        untrasform(g2d, image, position);
+        g2d.translate(-position.x, -position.y);
     }
 
-    private Point transform(Graphics2D g2d) {
+    private Point transform(Graphics2D g2d, Image image) {
         Point position = getPosition();
         position.setLocation(velocity.getTargetFromPoint(position));
+        bounds.setBounds((int) (position.x - (scale * PIXEL_DIMENSION * image.getWidth() / 2)),
+                (int) (position.y - (scale * PIXEL_DIMENSION * image.getHeight() / 2)),
+                (int) (PIXEL_DIMENSION * image.getWidth() * scale),
+                (int) (PIXEL_DIMENSION * image.getHeight() * scale));
         // Translate to the center of the component
         g2d.translate(position.x, position.y);
+        g2d.scale(scale, scale);
         // Rotate around the center
         g2d.rotate(angle);
         return position;
-    }
-
-    private void untrasform(Graphics2D g2d, Image image, Point position) {
-        g2d.translate(-position.x, -position.y);
-        bounds.setBounds(position.x - PIXEL_DIMENSION * image.getWidth() / 2,
-                position.y - PIXEL_DIMENSION * image.getHeight() / 2,
-                PIXEL_DIMENSION * image.getWidth(),
-                PIXEL_DIMENSION * image.getHeight());
     }
 }
