@@ -49,7 +49,7 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
             int v = (int) (Math.sin(angle) * image.getWidth() * PIXEL_DIMENSION * 0.60);
             int u = (int) (Math.cos(angle) * image.getHeight() * PIXEL_DIMENSION * 0.60);
             Beam beam = new Beam(new Point(position.x + v,position.y - u),
-                    new Velocity(angle, 10));
+                    new Velocity(angle, BEAM_SPEED));
             this.beamFunction.accept(beam);
         }
     }

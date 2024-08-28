@@ -11,6 +11,8 @@ public class Beam extends PlayElement {
     private boolean hit = false;
     private static Image image = new Image("images/laser beam.png");
 
+
+
     public Beam(Point position, Velocity velocity) {
         this.velocity = velocity;
         this.angle = velocity.getAngle();

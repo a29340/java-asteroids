@@ -17,20 +17,8 @@ public abstract class PlayElement extends Entity {
 
     public abstract void acceptCollision(PlayElement collided);
 
-    public Velocity getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(Velocity velocity) {
-        this.velocity = velocity;
-    }
-
     public Rectangle getBounds() {
         return bounds;
-    }
-
-    public void setBounds(Rectangle bounds) {
-        this.bounds = bounds;
     }
 
     protected boolean isInFrame() {
