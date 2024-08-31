@@ -22,8 +22,6 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
     private HealthBar health;
     private Image image = new Image("images/ship-pixel.png");
     private Point mousePosition = MouseInfo.getPointerInfo().getLocation();
-    private int coolDownFrame = 0;
-    private int explosionFrame = 0;
 
     public Ship(HealthBar health, Consumer<PlayElement> beamFunction) {
         this.health = health;
@@ -144,12 +142,12 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
                 velocity.setDy(0);
             }
         }
-        if (explosionFrame > 0) {
-            explosionFrame = explosionFrame >= SHIP_EXPLOSION_FRAMES ? 0 : explosionFrame + 1;
-            drawExplosion(g2d, image, explosionFrame, SHIP_EXPLOSION_FRAMES);
-        } else if (coolDownFrame > 0) {
-            coolDownFrame = coolDownFrame >= SHIP_COOLDOWN_FRAMES ? 0 : coolDownFrame + 1;
-            drawCooldown(g2d, image, coolDownFrame, SHIP_COOLDOWN_FRAMES);
+        if (frame > 0) {
+            if (!isAlive()) {
+                drawExplosion(g2d, image, SHIP_EXPLOSION_FRAMES);
+            } else {
+                drawCooldown(g2d, image, SHIP_COOLDOWN_FRAMES);
+            }
         } else {
             drawPlayElement(g2d, image);
         }
@@ -157,18 +155,14 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
 
     @Override
     public boolean shouldBeRemoved() {
-        return this.explosionFrame >= SHIP_EXPLOSION_FRAMES;
+        return !isAlive() && this.frame >= SHIP_EXPLOSION_FRAMES;
     }
 
     @Override
     public void acceptCollision(PlayElement collided) {
-        if (collided instanceof Asteroid && explosionFrame == 0 && coolDownFrame == 0) {
+        if (collided instanceof Asteroid && frame == 0) {
             this.health.setHealth(this.health.getHealth() - 10);
-            if (!isAlive()) {
-                explosionFrame = 1;
-            } else {
-                coolDownFrame = 1;
-            }
+            frame = 1;
         }
     }
 

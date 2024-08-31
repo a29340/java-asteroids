@@ -6,12 +6,10 @@ import com.a29340.core.Velocity;
 
 import java.awt.*;
 
-import static com.a29340.utils.Constants.ASTEROID_EXPLOSION_FRAMES;
-import static com.a29340.utils.Constants.FRAME_SIZE;
+import static com.a29340.utils.Constants.*;
 
 public class Asteroid extends PlayElement {
     private boolean hit = false;
-    private int frame = 0;
     private double dgamma;
     private static Image image = new Image("images/asteroid.png");
 
@@ -27,7 +25,7 @@ public class Asteroid extends PlayElement {
         } else {
             randomPosition = new Point((int) (Math.random() * FRAME_SIZE.width), FRAME_SIZE.height + 250);
         }
-        Velocity velocity = new Velocity((target.x - randomPosition.x)/100, (target.y - randomPosition.y)/100);
+        Velocity velocity = new Velocity((target.x - randomPosition.x)*60/(FPS * 100), (target.y - randomPosition.y)*60/(FPS*100));
         this.scale = Math.random() + 0.5;
         this.dgamma = Math.random() / 10;
         setPosition(randomPosition);
@@ -40,8 +38,7 @@ public class Asteroid extends PlayElement {
             angle += dgamma;
             drawPlayElement(g2d, image);
         } else {
-            frame += 1;
-            drawExplosion(g2d, image, frame, ASTEROID_EXPLOSION_FRAMES);
+            drawExplosion(g2d, image, ASTEROID_EXPLOSION_FRAMES);
         }
     }
 
