@@ -79,4 +79,8 @@ public abstract class PlayElement extends Entity {
         g2d.rotate(angle);
         return position;
     }
+
+    public int getFrame() {
+        return frame;
+    }
 }

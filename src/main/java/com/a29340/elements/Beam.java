@@ -23,7 +23,7 @@ public class Beam extends PlayElement {
     public void updatePlayElement(Graphics2D g2d) {
         Point position = getPosition();
         position.setLocation(velocity.getTargetFromPoint(position));
-        if (frame > 0) {
+        if (hit) {
             drawExplosion(g2d, image, ASTEROID_EXPLOSION_FRAMES);
         } else {
             drawPlayElement(g2d, image);
@@ -40,7 +40,6 @@ public class Beam extends PlayElement {
         if (collided instanceof Asteroid) {
             if (hit == false) {
                 hit = true;
-                frame = 1;
                 velocity.setDx(0);
                 velocity.setDy(0);
             }

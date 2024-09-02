@@ -4,6 +4,7 @@ import com.a29340.core.PlayElement;
 import com.a29340.core.UIElement;
 import com.a29340.elements.Asteroid;
 import com.a29340.elements.HealthBar;
+import com.a29340.elements.ScoreService;
 import com.a29340.elements.Ship;
 import com.a29340.utils.DebugInfo;
 
@@ -31,9 +32,11 @@ public class MainPanel extends JPanel {
         requestFocus();
         configureBackground();
         HealthBar healthBar = configureDashboard();
+        ScoreService scoreService = new ScoreService();
+        uiElements.add(scoreService);
         Ship ship = configureShip(healthBar);
         configureAsteroids(ship);
-        runGameLoop();
+        runGameLoop(scoreService);
     }
 
     private HealthBar configureDashboard() {
@@ -68,15 +71,15 @@ public class MainPanel extends JPanel {
         return ship;
     }
 
-    private void runGameLoop() {
+    private void runGameLoop(ScoreService scoreService) {
         Timer timer = new Timer(1000/FPS, e -> {
-            detectCollision();
+            detectCollision(scoreService);
             repaint();
         });
         timer.start();
     }
 
-    private void detectCollision() {
+    private void detectCollision(ScoreService scoreService) {
         for (int i = 0; i < playElements.size(); i++) {
             for (int j = i; j < playElements.size(); j++) {
                 PlayElement a = playElements.get(i);
@@ -84,6 +87,7 @@ public class MainPanel extends JPanel {
                 if (a!=b && a.getBounds().intersects(b.getBounds()))  {
                    a.acceptCollision(b);
                    b.acceptCollision(a);
+                   scoreService.processCollision(a,b);
                    DebugInfo.printDebugMessage("Collision detected between " + a.getClass().getSimpleName() + " and " + b.getClass().getSimpleName());
                 }
             }
