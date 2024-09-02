@@ -26,7 +26,7 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
     public Ship(HealthBar health, Consumer<PlayElement> beamFunction) {
         this.health = health;
         this.beamFunction = beamFunction;
-        this.scale= 0.7;
+        this.scale= 1;
         Timer slowDownTimer = new Timer(150, e -> {
             if (velocity.getModule() > 0) {
                 velocity.increaseX((int) (-velocity.getDx() / velocity.getModule()));
