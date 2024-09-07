@@ -13,7 +13,7 @@ public class ScoreService extends UIElement {
     @Override
     public void update(Graphics2D g2d) {
         g2d.setColor(Color.YELLOW);
-        g2d.setFont(new Font("Arial", Font.BOLD, 20));
+        g2d.setFont(new Font("Joystix Monospace", Font.PLAIN, 25));
         g2d.drawString("Score: " + score, 20, 20);
     }
 
