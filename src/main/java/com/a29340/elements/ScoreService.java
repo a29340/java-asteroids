@@ -5,8 +5,6 @@ import com.a29340.core.UIElement;
 
 import java.awt.*;
 
-import static com.a29340.utils.Constants.FRAME_SIZE;
-
 public class ScoreService extends UIElement {
     private int score = 0;
 
@@ -14,7 +12,7 @@ public class ScoreService extends UIElement {
     public void update(Graphics2D g2d) {
         g2d.setColor(Color.YELLOW);
         g2d.setFont(new Font("Joystix Monospace", Font.PLAIN, 25));
-        g2d.drawString("Score: " + score, 20, 20);
+        g2d.drawString("Score: " + score, 20, 40);
     }
 
     public void processCollision(PlayElement a, PlayElement b) {
