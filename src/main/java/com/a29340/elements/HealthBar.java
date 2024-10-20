@@ -3,6 +3,7 @@ package com.a29340.elements;
 import com.a29340.core.Image;
 import com.a29340.core.UIElement;
 import com.a29340.utils.Graphics;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class HealthBar extends UIElement {
     private final static Point position;
     private final static List<Image> barsImages = new ArrayList<>();
     private static Image healthBarImage;
+
     static {
             healthBarImage = new Image("images/healthbar/data/000.png");
             String[] names = new String[] {"002-000.png", "002-001.png", "002-002.png", "002-003.png", "002-004.png", "002-005.png", "002-006.png", "002-007.png", "002-008.png", "002-009.png", "002-010.png", "002-011.png", "002-012.png", "002-013.png", "002-014.png", "002-015.png"};

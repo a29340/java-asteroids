@@ -1,12 +1,11 @@
 package com.a29340;
 
 import com.a29340.core.PlayElement;
+import com.a29340.core.Scene;
 import com.a29340.core.UIElement;
-import com.a29340.elements.Asteroid;
-import com.a29340.elements.HealthBar;
-import com.a29340.elements.ScoreService;
-import com.a29340.elements.Ship;
+import com.a29340.elements.*;
 import com.a29340.utils.DebugInfo;
+import com.a29340.utils.GameComponents;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,13 +16,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.a29340.utils.Constants.FPS;
 import static com.a29340.utils.Constants.FRAME_SIZE;
 
 public class MainPanel extends JPanel {
     BufferedImage background;
     List<PlayElement> playElements = new ArrayList<>();
     List<UIElement> uiElements = new ArrayList<>();
+    StageService stageService = new StageService();
+    GameComponents gcm = new GameComponents();
 
     public MainPanel() {
         setSize(FRAME_SIZE);
@@ -31,17 +31,38 @@ public class MainPanel extends JPanel {
         setFocusable(true);
         requestFocus();
         configureBackground();
-        HealthBar healthBar = configureDashboard();
+        Scene gamePlay = new Scene(this::setupGame, () -> {
+            detectCollision();
+            repaint();
+        }, () -> gcm.getHealthBar().getHealth() <= 0);
+        Scene displayScore = new Scene(() -> {
+            uiElements = uiElements.stream().filter(el -> !el.equals(gcm.getHealthBar()))
+                    .collect(Collectors.toList());
+        }, () -> {
+            detectCollision();
+            repaint();
+        }, () -> false);
+        stageService.addScene(gamePlay);
+        stageService.addScene(displayScore);
+        stageService.start();
+        // show starting screen
+        // run game until health > 0
+        // show end page
+    }
+
+    private void setupGame() {
+        configureDashboard();
         ScoreService scoreService = new ScoreService();
+        gcm.setScoreService(scoreService);
         uiElements.add(scoreService);
-        Ship ship = configureShip(healthBar);
-        configureAsteroids(ship);
-        runGameLoop(scoreService);
+        configureShip();
+        configureAsteroids();
     }
 
     private HealthBar configureDashboard() {
         HealthBar healthBar = new HealthBar();
         uiElements.add(healthBar);
+        gcm.setHealthBar(healthBar);
         return healthBar;
     }
 
@@ -53,33 +74,26 @@ public class MainPanel extends JPanel {
         }
     }
 
-    private void configureAsteroids(Ship ship) {
+    private void configureAsteroids() {
         Timer asteroidTimer = new Timer(1000, e -> {
-            playElements.add(new Asteroid(ship.getPosition()));
+            playElements.add(new Asteroid(gcm.getShip().getPosition()));
         });
         asteroidTimer.start();
     }
 
-    private Ship configureShip(HealthBar healthBar) {
-        Ship ship = new Ship(healthBar, beam -> {
+    private Ship configureShip() {
+        Ship ship = new Ship(gcm.getHealthBar(), beam -> {
             playElements.add(beam);
         });
         playElements.add(ship);
+        gcm.setShip(ship);
         addKeyListener(ship);
         addMouseMotionListener(ship);
         addMouseListener(ship);
         return ship;
     }
 
-    private void runGameLoop(ScoreService scoreService) {
-        Timer timer = new Timer(1000/FPS, e -> {
-            detectCollision(scoreService);
-            repaint();
-        });
-        timer.start();
-    }
-
-    private void detectCollision(ScoreService scoreService) {
+    private void detectCollision() {
         for (int i = 0; i < playElements.size(); i++) {
             for (int j = i; j < playElements.size(); j++) {
                 PlayElement a = playElements.get(i);
@@ -87,7 +101,7 @@ public class MainPanel extends JPanel {
                 if (a!=b && a.getBounds().intersects(b.getBounds()))  {
                    a.acceptCollision(b);
                    b.acceptCollision(a);
-                   scoreService.processCollision(a,b);
+                   gcm.getScoreService().processCollision(a,b);
                    DebugInfo.printDebugMessage("Collision detected between " + a.getClass().getSimpleName() + " and " + b.getClass().getSimpleName());
                 }
             }

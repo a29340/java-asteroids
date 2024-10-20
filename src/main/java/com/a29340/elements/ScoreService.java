@@ -6,7 +6,7 @@ import com.a29340.core.UIElement;
 import java.awt.*;
 
 public class ScoreService extends UIElement {
-    private int score = 0;
+    private Integer score = 0;
 
     @Override
     public void update(Graphics2D g2d) {
