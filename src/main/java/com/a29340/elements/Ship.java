@@ -16,15 +16,13 @@ import java.util.function.Consumer;
 import static com.a29340.utils.Constants.*;
 
 
-public class Ship extends PlayElement implements MouseMotionListener, MouseInputListener, KeyListener {
+public class Ship extends PlayElement implements MouseInputListener, KeyListener {
 
     private Consumer<PlayElement> beamFunction;
-    private HealthBar health;
     private Image image = new Image("images/ship-pixel.png");
     private Point mousePosition = MouseInfo.getPointerInfo().getLocation();
 
-    public Ship(HealthBar health, Consumer<PlayElement> beamFunction) {
-        this.health = health;
+    public Ship(Consumer<PlayElement> beamFunction) {
         this.beamFunction = beamFunction;
         this.scale= 1;
         Timer slowDownTimer = new Timer(150, e -> {
@@ -161,7 +159,7 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
     @Override
     public void acceptCollision(PlayElement collided) {
         if (collided instanceof Asteroid && frame == 0) {
-            this.health.setHealth(this.health.getHealth() - 10);
+            HealthBar.setHealth(HealthBar.getHealth() - 10);
             frame = 1;
         }
     }
@@ -173,6 +171,6 @@ public class Ship extends PlayElement implements MouseMotionListener, MouseInput
     }
 
     private boolean isAlive() {
-        return this.health.getHealth() > 0;
+        return HealthBar.getHealth() > 0;
     }
 }

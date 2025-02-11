@@ -1,16 +1,22 @@
 package com.a29340.core;
 
+import javax.swing.event.MouseInputListener;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BooleanSupplier;
 
 public class Scene {
-    Runnable setup;
-    Runnable scene;
-    BooleanSupplier ended;
+    protected Runnable setup;
+    protected Runnable scene;
+    protected BooleanSupplier ended;
 
-    public Scene(Runnable setup, Runnable scene, BooleanSupplier ended) {
-        this.setup = setup;
-        this.ended = ended;
-        this.scene = scene;
+    protected List<PlayElement> playElements = new ArrayList<>();
+    protected List<UIElement> uiElements = new ArrayList<>();
+    protected List<KeyListener> keyListeners = new ArrayList<>();
+    protected List<MouseInputListener> mouseInputListeners = new ArrayList<>();
+
+    protected Scene() {
     }
 
     public Runnable getSetup() {
@@ -23,5 +29,21 @@ public class Scene {
 
     public BooleanSupplier getEnded() {
         return ended;
+    }
+
+    public List<PlayElement> getPlayElements() {
+        return playElements;
+    }
+
+    public List<UIElement> getUiElements() {
+        return uiElements;
+    }
+
+    public List<KeyListener> getKeyListeners() {
+        return keyListeners;
+    }
+
+    public List<MouseInputListener> getMouseInputListeners() {
+        return mouseInputListeners;
     }
 }

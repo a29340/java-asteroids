@@ -14,10 +14,13 @@ import static com.a29340.utils.Constants.PIXEL_DIMENSION;
 public class HealthBar extends UIElement {
 
     public final static Integer INITIAL_HEALTH = 160;
-    private Integer health = INITIAL_HEALTH;
+    private static Integer health = INITIAL_HEALTH;
     private final static Point position;
     private final static List<Image> barsImages = new ArrayList<>();
     private static Image healthBarImage;
+    private static HealthBar instance = new HealthBar();
+
+    private HealthBar() {}
 
     static {
             healthBarImage = new Image("images/healthbar/data/000.png");
@@ -30,12 +33,16 @@ public class HealthBar extends UIElement {
         position = new Point(x,y);
     }
 
-    public Integer getHealth() {
+    public static HealthBar getInstance() {
+        return instance;
+    }
+
+    public static Integer getHealth() {
         return health;
     }
 
-    public void setHealth(Integer health) {
-        this.health = health;
+    public static void setHealth(Integer h) {
+        health = h;
     }
 
     @Override

@@ -6,7 +6,16 @@ import com.a29340.core.UIElement;
 import java.awt.*;
 
 public class ScoreService extends UIElement {
-    private Integer score = 0;
+    private static Integer score = 0;
+
+    private static ScoreService instance =  new ScoreService();
+
+    public static ScoreService getInstance() {
+        return instance;
+    }
+
+    private ScoreService() {
+    }
 
     @Override
     public void update(Graphics2D g2d) {
@@ -15,13 +24,13 @@ public class ScoreService extends UIElement {
         g2d.drawString("Score: " + score, 20, 40);
     }
 
-    public void processCollision(PlayElement a, PlayElement b) {
+    public static void processCollision(PlayElement a, PlayElement b) {
         if (asteroidHit(a,b) && a.getFrame() == 1 && b.getFrame() == 1) {
             score = score + 10;
         }
     }
 
-    private boolean asteroidHit(PlayElement a, PlayElement b) {
+    private static boolean asteroidHit(PlayElement a, PlayElement b) {
         return (a instanceof Beam && b instanceof Asteroid) || (a instanceof Asteroid && b instanceof Beam);
     }
 }

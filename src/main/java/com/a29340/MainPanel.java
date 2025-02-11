@@ -1,29 +1,23 @@
 package com.a29340;
 
-import com.a29340.core.PlayElement;
-import com.a29340.core.Scene;
-import com.a29340.core.UIElement;
-import com.a29340.elements.*;
+import com.a29340.elements.StageService;
+import com.a29340.scenes.GameplayScene;
 import com.a29340.utils.DebugInfo;
-import com.a29340.utils.GameComponents;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.MouseInputListener;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.a29340.utils.Constants.FRAME_SIZE;
 
-public class MainPanel extends JPanel {
+public class MainPanel extends JPanel implements MouseInputListener, KeyListener {
     BufferedImage background;
-    List<PlayElement> playElements = new ArrayList<>();
-    List<UIElement> uiElements = new ArrayList<>();
-    StageService stageService = new StageService();
-    GameComponents gcm = new GameComponents();
 
     public MainPanel() {
         setSize(FRAME_SIZE);
@@ -31,40 +25,29 @@ public class MainPanel extends JPanel {
         setFocusable(true);
         requestFocus();
         configureBackground();
-        Scene gamePlay = new Scene(this::setupGame, () -> {
-            detectCollision();
-            repaint();
-        }, () -> gcm.getHealthBar().getHealth() <= 0);
-        Scene displayScore = new Scene(() -> {
-            uiElements = uiElements.stream().filter(el -> !el.equals(gcm.getHealthBar()))
-                    .collect(Collectors.toList());
-        }, () -> {
-            detectCollision();
-            repaint();
-        }, () -> false);
-        stageService.addScene(gamePlay);
-        stageService.addScene(displayScore);
-        stageService.start();
-        // show starting screen
-        // run game until health > 0
-        // show end page
+        addKeyListener(this);
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        // --- create start menu scene
+//        Scene startMenu = new Scene(() -> {}, () -> {}, () -> false);
+//        StageService.addScene(startMenu);
+        StageService.addScene(new GameplayScene(this::repaint));
+        StageService.start();
+        // --- create end titles scene
+//        Scene displayScore = new Scene(() -> {
+//            uiElements = uiElements.stream().filter(el -> !el.equals(gcm.getHealthBar()))
+//                    .collect(Collectors.toList());
+//        }, () -> {
+//            detectCollision();
+//            repaint();
+//        }, () -> false);
+//        StageService.addScene(displayScore);
+
     }
 
-    private void setupGame() {
-        configureDashboard();
-        ScoreService scoreService = new ScoreService();
-        gcm.setScoreService(scoreService);
-        uiElements.add(scoreService);
-        configureShip();
-        configureAsteroids();
-    }
 
-    private HealthBar configureDashboard() {
-        HealthBar healthBar = new HealthBar();
-        uiElements.add(healthBar);
-        gcm.setHealthBar(healthBar);
-        return healthBar;
-    }
+
+
 
     private void configureBackground() {
         try {
@@ -74,52 +57,17 @@ public class MainPanel extends JPanel {
         }
     }
 
-    private void configureAsteroids() {
-        Timer asteroidTimer = new Timer(1000, e -> {
-            playElements.add(new Asteroid(gcm.getShip().getPosition()));
-        });
-        asteroidTimer.start();
-    }
 
-    private Ship configureShip() {
-        Ship ship = new Ship(gcm.getHealthBar(), beam -> {
-            playElements.add(beam);
-        });
-        playElements.add(ship);
-        gcm.setShip(ship);
-        addKeyListener(ship);
-        addMouseMotionListener(ship);
-        addMouseListener(ship);
-        return ship;
-    }
 
-    private void detectCollision() {
-        for (int i = 0; i < playElements.size(); i++) {
-            for (int j = i; j < playElements.size(); j++) {
-                PlayElement a = playElements.get(i);
-                PlayElement b = playElements.get(j);
-                if (a!=b && a.getBounds().intersects(b.getBounds()))  {
-                   a.acceptCollision(b);
-                   b.acceptCollision(a);
-                   gcm.getScoreService().processCollision(a,b);
-                   DebugInfo.printDebugMessage("Collision detected between " + a.getClass().getSimpleName() + " and " + b.getClass().getSimpleName());
-                }
-            }
-        }
-    }
+
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         drawBackground(g2d);
-        playElements.forEach(c -> {
-            c.update(g2d);
-        });
-        uiElements.forEach(e -> {
-            e.update(g2d);
-        });
-        playElements = playElements.stream().filter(c -> !c.shouldBeRemoved()).collect(Collectors.toList());
+        StageService.getCurrentScene().getUiElements().forEach(uiElement -> uiElement.update(g2d));
+        StageService.getCurrentScene().getPlayElements().forEach(playElement -> playElement.update(g2d));
         DebugInfo.print(g2d);
         g2d.dispose();
     }
@@ -135,6 +83,84 @@ public class MainPanel extends JPanel {
                 }
                 x += background.getWidth();
             }
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
+            if (StageService.isPaused()) {
+                StageService.resume();
+            } else {
+                StageService.pause();
+            }
+            return;
+        }
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getKeyListeners().forEach(key -> key.keyTyped(e));
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getKeyListeners().forEach(key -> key.keyPressed(e));
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getKeyListeners().forEach(key -> key.keyReleased(e));
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getMouseInputListeners().forEach(m -> m.mouseClicked(e));
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getMouseInputListeners().forEach(m -> m.mousePressed(e));
+        }
+
+
+    }   @Override
+    public void mouseReleased(MouseEvent e) {
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getMouseInputListeners().forEach(m -> m.mouseReleased(e));
+        }
+
+
+    }   @Override
+    public void mouseEntered(MouseEvent e) {
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getMouseInputListeners().forEach(m -> m.mouseEntered(e));
+        }
+
+
+    }   @Override
+    public void mouseExited(MouseEvent e) {
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getMouseInputListeners().forEach(m -> m.mouseExited(e));
+        }
+
+
+    }   @Override
+    public void mouseDragged(MouseEvent e) {
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getMouseInputListeners().forEach(m -> m.mouseDragged(e));
+        }
+
+
+    }   @Override
+    public void mouseMoved(MouseEvent e) {
+        if (!StageService.isPaused()) {
+            StageService.getCurrentScene().getMouseInputListeners().forEach(m -> m.mouseMoved(e));
         }
     }
 }

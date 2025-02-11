@@ -11,14 +11,21 @@ import static com.a29340.utils.Constants.FPS;
 
 public class StageService {
 
-    private List<Scene> scenes = new ArrayList<>();
-    private Scene currentScene;
+    private static List<Scene> scenes = new ArrayList<>();
+    private static Scene currentScene;
+    private static Boolean isPaused = false;
 
-    public void addScene(Scene scene) {
+    static List<Timer> timers = new ArrayList<>();
+
+    public static void addScene(Scene scene) {
         scenes.add(scene);
     }
 
-    public void start() {
+    public static Scene getCurrentScene() {
+        return currentScene;
+    }
+
+    public static void start() {
         Iterator<Scene> iterator = scenes.iterator();
         currentScene = iterator.next();
         currentScene.getSetup().run();
@@ -33,5 +40,26 @@ public class StageService {
             }
         });
         timer.start();
+        timers.add(timer);
+    }
+
+    public static void pause() {
+        timers.forEach(Timer::stop);
+        isPaused = true;
+    }
+
+    public static void resume() {
+        timers.forEach(Timer::start);
+        isPaused = false;
+    }
+
+    public static Boolean isPaused() {
+        return isPaused;
+    }
+
+    public static void addTimer(Timer timer) {
+        if (timer != null) {
+            timers.add(timer);
+        }
     }
 }
