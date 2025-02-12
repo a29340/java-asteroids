@@ -14,6 +14,11 @@ public class StageService {
     private static List<Scene> scenes = new ArrayList<>();
     private static Scene currentScene;
     private static Boolean isPaused = false;
+    private static Runnable repaint;
+
+    public static void setRepaint(Runnable r) {
+        repaint = r;
+    }
 
     static List<Timer> timers = new ArrayList<>();
 
@@ -28,14 +33,15 @@ public class StageService {
     public static void start() {
         Iterator<Scene> iterator = scenes.iterator();
         currentScene = iterator.next();
-        currentScene.getSetup().run();
+        currentScene.setup();
         Timer timer = new Timer(1000 / FPS, e -> {
             if (currentScene != null) {
-                if (currentScene.getEnded().getAsBoolean()) {
+                if (currentScene.ended()) {
                     currentScene = iterator.hasNext() ? iterator.next() : null;
-                    currentScene.getSetup().run();
+                    currentScene.setup();
                 } else {
-                    currentScene.getScene().run();
+                    currentScene.runScene();
+                    repaint.run();
                 }
             }
         });

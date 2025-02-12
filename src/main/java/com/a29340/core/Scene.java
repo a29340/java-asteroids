@@ -4,31 +4,21 @@ import javax.swing.event.MouseInputListener;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
-public class Scene {
-    protected Runnable setup;
-    protected Runnable scene;
-    protected BooleanSupplier ended;
-
+public abstract class Scene {
     protected List<PlayElement> playElements = new ArrayList<>();
     protected List<UIElement> uiElements = new ArrayList<>();
     protected List<KeyListener> keyListeners = new ArrayList<>();
     protected List<MouseInputListener> mouseInputListeners = new ArrayList<>();
 
-    protected Scene() {
-    }
+    public abstract void scene();
 
-    public Runnable getSetup() {
-        return setup;
-    }
+    public abstract void setup();
 
-    public Runnable getScene() {
-        return scene;
-    }
+    public abstract boolean ended();
 
-    public BooleanSupplier getEnded() {
-        return ended;
+    public void runScene() {
+        scene();
     }
 
     public List<PlayElement> getPlayElements() {

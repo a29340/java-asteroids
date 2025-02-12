@@ -12,4 +12,6 @@ public final class Constants {
     final public static int SHIP_COOLDOWN_FRAMES = (int) (0.7 * FPS);
     final public static int ASTEROID_EXPLOSION_FRAMES = (int) (0.6 * FPS);
     final public static int SHIP_EXPLOSION_FRAMES = (int) (2.0 * FPS);
+    final public static Font monospaceFont = new Font("Joystix Monospace", Font.PLAIN, 25);
+
 }

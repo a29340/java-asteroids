@@ -9,17 +9,26 @@ import javax.swing.*;
 import java.util.stream.Collectors;
 
 public class GameplayScene extends Scene {
-    Ship ship;
-    public GameplayScene(Runnable repaint) {
-        setup = this::setupGame;
-        scene = () -> {
-            detectCollision();
-            playElements = playElements.stream()
-                    .filter(c -> !c.shouldBeRemoved())
-                    .collect(Collectors.toList());
-            repaint.run();
-        };
-        ended = () -> HealthBar.getInstance().getHealth() <= 0;
+    private Ship ship;
+
+    @Override
+    public void setup() {
+        configureDashboard();
+        uiElements.add(ScoreService.getInstance());
+        configureShip();
+        configureAsteroids();
+    }
+    @Override
+    public void scene() {
+        detectCollision();
+        playElements = playElements.stream()
+                .filter(c -> !c.shouldBeRemoved())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean ended() {
+        return HealthBar.getInstance().getHealth() <= 0;
     }
 
     private void configureAsteroids() {
@@ -38,13 +47,6 @@ public class GameplayScene extends Scene {
         keyListeners.add(ship);
         mouseInputListeners.add(ship);
         return ship;
-    }
-
-    private void setupGame() {
-        configureDashboard();
-        uiElements.add(ScoreService.getInstance());
-        configureShip();
-        configureAsteroids();
     }
 
     private HealthBar configureDashboard() {

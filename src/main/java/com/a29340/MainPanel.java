@@ -2,6 +2,7 @@ package com.a29340;
 
 import com.a29340.elements.StageService;
 import com.a29340.scenes.GameplayScene;
+import com.a29340.scenes.StartMenuScene;
 import com.a29340.utils.DebugInfo;
 
 import javax.imageio.ImageIO;
@@ -28,10 +29,10 @@ public class MainPanel extends JPanel implements MouseInputListener, KeyListener
         addKeyListener(this);
         addMouseListener(this);
         addMouseMotionListener(this);
+        StageService.setRepaint(this::repaint);
         // --- create start menu scene
-//        Scene startMenu = new Scene(() -> {}, () -> {}, () -> false);
-//        StageService.addScene(startMenu);
-        StageService.addScene(new GameplayScene(this::repaint));
+        StageService.addScene(new StartMenuScene());
+        StageService.addScene(new GameplayScene());
         StageService.start();
         // --- create end titles scene
 //        Scene displayScore = new Scene(() -> {

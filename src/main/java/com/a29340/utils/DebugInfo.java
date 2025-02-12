@@ -1,7 +1,5 @@
 package com.a29340.utils;
 
-import com.a29340.elements.Ship;
-
 import java.awt.*;
 import java.util.Comparator;
 import java.util.HashMap;
