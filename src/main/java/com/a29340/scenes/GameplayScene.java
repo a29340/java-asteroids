@@ -14,7 +14,7 @@ public class GameplayScene extends Scene {
     @Override
     public void setup() {
         configureDashboard();
-        uiElements.add(ScoreService.getInstance());
+        uiElements.add(Score.getInstance());
         configureShip();
         configureAsteroids();
     }
@@ -28,31 +28,25 @@ public class GameplayScene extends Scene {
 
     @Override
     public boolean ended() {
-        return HealthBar.getInstance().getHealth() <= 0;
+        return HealthBar.getHealth() <= 0;
     }
 
     private void configureAsteroids() {
-        Timer asteroidTimer = new Timer(1000, e -> {
-            playElements.add(new Asteroid(ship.getPosition()));
-        });
+        Timer asteroidTimer = new Timer(1000, e -> playElements.add(new Asteroid(ship.getPosition())));
         asteroidTimer.start();
         StageService.addTimer(asteroidTimer);
     }
 
-    private Ship configureShip() {
-        ship = new Ship(beam -> {
-            playElements.add(beam);
-        });
+    private void configureShip() {
+        ship = new Ship(beam -> playElements.add(beam));
         playElements.add(ship);
         keyListeners.add(ship);
         mouseInputListeners.add(ship);
-        return ship;
     }
 
-    private HealthBar configureDashboard() {
+    private void configureDashboard() {
         HealthBar healthBar = HealthBar.getInstance();
         uiElements.add(healthBar);
-        return healthBar;
     }
 
     private void detectCollision() {
@@ -63,7 +57,7 @@ public class GameplayScene extends Scene {
                 if (a!=b && a.getBounds().intersects(b.getBounds()))  {
                     a.acceptCollision(b);
                     b.acceptCollision(a);
-                    ScoreService.processCollision(a,b);
+                    Score.processCollision(a,b);
                     DebugInfo.printDebugMessage("Collision detected between " + a.getClass().getSimpleName() + " and " + b.getClass().getSimpleName());
                 }
             }

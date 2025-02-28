@@ -11,7 +11,7 @@ import static com.a29340.utils.Constants.FPS;
 
 public class StageService {
 
-    private static List<Scene> scenes = new ArrayList<>();
+    private static final List<Scene> scenes = new ArrayList<>();
     private static Scene currentScene;
     private static Boolean isPaused = false;
     private static Runnable repaint;
@@ -35,14 +35,16 @@ public class StageService {
         currentScene = iterator.next();
         currentScene.setup();
         Timer timer = new Timer(1000 / FPS, e -> {
-            if (currentScene != null) {
-                if (currentScene.ended()) {
-                    currentScene = iterator.hasNext() ? iterator.next() : null;
+            if (currentScene.ended()) {
+                if (iterator.hasNext()) {
+                    currentScene = iterator.next();
                     currentScene.setup();
                 } else {
-                    currentScene.runScene();
-                    repaint.run();
+                    System.exit(0);
                 }
+            } else {
+                currentScene.runScene();
+                repaint.run();
             }
         });
         timer.start();

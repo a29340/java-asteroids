@@ -7,16 +7,16 @@ import java.awt.*;
 
 import static com.a29340.utils.Constants.monospaceFont;
 
-public class ScoreService extends UIElement {
+public class Score extends UIElement {
     private static Integer score = 0;
 
-    private static ScoreService instance =  new ScoreService();
+    private static Score instance =  new Score();
 
-    public static ScoreService getInstance() {
+    public static Score getInstance() {
         return instance;
     }
 
-    private ScoreService() {
+    private Score() {
     }
 
     @Override
