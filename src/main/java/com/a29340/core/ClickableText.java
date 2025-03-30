@@ -1,6 +1,4 @@
-package com.a29340.elements;
-
-import com.a29340.core.Text;
+package com.a29340.core;
 
 import javax.swing.event.MouseInputListener;
 import java.awt.*;

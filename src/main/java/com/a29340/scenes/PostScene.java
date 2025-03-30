@@ -1,8 +1,7 @@
 package com.a29340.scenes;
 
 import com.a29340.core.Scene;
-import com.a29340.elements.ClickableText;
-import com.a29340.elements.HealthBar;
+import com.a29340.core.ClickableText;
 import com.a29340.elements.Score;
 import com.a29340.elements.StageService;
 import com.a29340.utils.Constants;
