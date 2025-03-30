@@ -18,11 +18,6 @@ public class Text extends UIElement {
         setPosition(position.x - width/2, position.y - height/2);
     }
 
-    public boolean isUnder(Point point) {
-        return getPosition().x < point.x && getPosition().x + width > point.x &&
-                getPosition().y < point.y && getPosition().y + height > point.y;
-    }
-
     public void setFont(Font font) {
         this.font = font;
     }
@@ -32,5 +27,13 @@ public class Text extends UIElement {
         g2d.setFont(font);
         g2d.setColor(color);
         g2d.drawString(text, getPosition().x, getPosition().y+height);
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
     }
 }

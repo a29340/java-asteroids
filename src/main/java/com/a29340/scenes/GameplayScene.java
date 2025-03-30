@@ -8,16 +8,23 @@ import com.a29340.utils.DebugInfo;
 import javax.swing.*;
 import java.util.stream.Collectors;
 
+import static com.a29340.utils.Constants.FRAME_SIZE;
+
 public class GameplayScene extends Scene {
     private Ship ship;
 
     @Override
     public void setup() {
         configureDashboard();
+        Score.setInstancePosition(40, 20);
+        Score.resetScore();
+        HealthBar.setHealth(HealthBar.INITIAL_HEALTH);
         uiElements.add(Score.getInstance());
         configureShip();
         configureAsteroids();
+        StageService.resume();
     }
+
     @Override
     public void scene() {
         detectCollision();
@@ -62,5 +69,13 @@ public class GameplayScene extends Scene {
                 }
             }
         }
+    }
+
+    public void reset() {
+        Score.setInstancePosition(40, 20);
+        Score.resetScore();
+        playElements.removeIf(playElement -> playElement instanceof Asteroid);
+        ship.getPosition().setLocation(FRAME_SIZE.width / 2, FRAME_SIZE.height / 2);
+        HealthBar.setHealth(HealthBar.INITIAL_HEALTH);
     }
 }

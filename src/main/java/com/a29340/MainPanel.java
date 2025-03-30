@@ -2,6 +2,7 @@ package com.a29340;
 
 import com.a29340.elements.StageService;
 import com.a29340.scenes.GameplayScene;
+import com.a29340.scenes.PostScene;
 import com.a29340.scenes.StartMenuScene;
 import com.a29340.utils.DebugInfo;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 import static com.a29340.utils.Constants.FRAME_SIZE;
 
 public class MainPanel extends JPanel implements MouseInputListener, KeyListener {
+
     BufferedImage background;
 
     public MainPanel() {
@@ -30,25 +32,11 @@ public class MainPanel extends JPanel implements MouseInputListener, KeyListener
         addMouseListener(this);
         addMouseMotionListener(this);
         StageService.setRepaint(this::repaint);
-        // --- create start menu scene
         StageService.addScene(new StartMenuScene());
         StageService.addScene(new GameplayScene());
+        StageService.addScene(new PostScene());
         StageService.start();
-        // --- create end titles scene
-//        Scene displayScore = new Scene(() -> {
-//            uiElements = uiElements.stream().filter(el -> !el.equals(gcm.getHealthBar()))
-//                    .collect(Collectors.toList());
-//        }, () -> {
-//            detectCollision();
-//            repaint();
-//        }, () -> false);
-//        StageService.addScene(displayScore);
-
     }
-
-
-
-
 
     private void configureBackground() {
         try {
@@ -57,10 +45,6 @@ public class MainPanel extends JPanel implements MouseInputListener, KeyListener
             e.printStackTrace();
         }
     }
-
-
-
-
 
     @Override
     protected void paintComponent(Graphics g) {

@@ -1,12 +1,15 @@
 package com.a29340.scenes;
 
 import com.a29340.core.Scene;
-import com.a29340.elements.StartMenu;
+import com.a29340.elements.ClickableText;
+import com.a29340.utils.Constants;
+
+import java.awt.*;
 
 public class StartMenuScene extends Scene {
 
-    StartMenu startMenu = new StartMenu();
-
+    ClickableText startText;
+    private boolean ended = false;
 
     @Override
     public void scene() {
@@ -15,13 +18,14 @@ public class StartMenuScene extends Scene {
 
     @Override
     public void setup() {
-        uiElements.add(startMenu);
-        mouseInputListeners.add(startMenu);
+        startText = new ClickableText("START", 130,30, new Point(Constants.FRAME_SIZE.width/2, Constants.FRAME_SIZE.height/2), () -> this.ended = true);
+        uiElements.add(startText);
+        mouseInputListeners.add(startText);
     }
 
     @Override
     public boolean ended() {
-        return startMenu.isEnded();
+        return ended;
     }
 
 }

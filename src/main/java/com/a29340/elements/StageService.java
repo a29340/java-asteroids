@@ -1,10 +1,10 @@
 package com.a29340.elements;
 
 import com.a29340.core.Scene;
+import com.a29340.scenes.GameplayScene;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.a29340.utils.Constants.FPS;
@@ -31,13 +31,13 @@ public class StageService {
     }
 
     public static void start() {
-        Iterator<Scene> iterator = scenes.iterator();
-        currentScene = iterator.next();
+        currentScene = scenes.get(0);
         currentScene.setup();
         Timer timer = new Timer(1000 / FPS, e -> {
             if (currentScene.ended()) {
-                if (iterator.hasNext()) {
-                    currentScene = iterator.next();
+                int i = scenes.indexOf(currentScene);
+                if (i < scenes.size() - 1) {
+                    currentScene = scenes.get(i + 1);
                     currentScene.setup();
                 } else {
                     System.exit(0);
@@ -69,5 +69,10 @@ public class StageService {
         if (timer != null) {
             timers.add(timer);
         }
+    }
+
+    public static void restartGameplay() {
+        currentScene = scenes.get(1);
+        ((GameplayScene) currentScene).reset();
     }
 }

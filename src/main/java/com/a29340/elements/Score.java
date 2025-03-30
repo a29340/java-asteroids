@@ -23,7 +23,7 @@ public class Score extends UIElement {
     public void update(Graphics2D g2d) {
         g2d.setColor(Color.YELLOW);
         g2d.setFont(monospaceFont);
-        g2d.drawString("Score: " + score, 20, 40);
+        g2d.drawString("Score: " + score, getPosition().x, getPosition().y);
     }
 
     public static void processCollision(PlayElement a, PlayElement b) {
@@ -34,5 +34,13 @@ public class Score extends UIElement {
 
     private static boolean asteroidHit(PlayElement a, PlayElement b) {
         return (a instanceof Beam && b instanceof Asteroid) || (a instanceof Asteroid && b instanceof Beam);
+    }
+
+    public  static void resetScore() {
+        score = 0;
+    }
+
+    public static void setInstancePosition(int x, int y) {
+        getInstance().setPosition(x, y);
     }
 }
