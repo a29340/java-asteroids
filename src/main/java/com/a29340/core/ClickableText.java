@@ -4,16 +4,19 @@ import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-import static com.a29340.utils.Constants.monospaceFont;
-
 public class ClickableText extends Text implements MouseInputListener {
 
     private boolean clicked = false;
     private Runnable onClick;
-
-    public ClickableText(String text, Integer width, Integer height, Point position, Runnable onClick) {
-        super(text, width, height, position);
+    private boolean isHovered = false;
+    private int hoveredHeight;
+    private int standardHeight;
+    public ClickableText(String text, Integer size, Point position, Runnable onClick, Float scaleFactorOnHover) {
+        super(text, size, position, Alignement.CENTER);
         this.onClick = onClick;
+        float dh = size * scaleFactorOnHover / aspectRatio;
+        hoveredHeight = (int) (size + dh);
+        standardHeight = size;
     }
 
     @Override
@@ -30,8 +33,9 @@ public class ClickableText extends Text implements MouseInputListener {
     }
 
     private boolean isUnder(Point point) {
-        return getPosition().x < point.x && getPosition().x + getWidth() > point.x &&
-                getPosition().y < point.y && getPosition().y + getHeight() > point.y;
+        return getLeftBound() < point.x && getRightBound() > point.x
+                &&
+                getTopBound() < point.y && getBottomBound() > point.y;
     }
 
     @Override
@@ -62,9 +66,18 @@ public class ClickableText extends Text implements MouseInputListener {
     @Override
     public void mouseMoved(MouseEvent e) {
         if (isUnder(e.getPoint())) {
-            setFont(monospaceFont.deriveFont(Font.PLAIN, 30));
+            if (!isHovered) {
+                isHovered = true;
+                // move text to left 5 px
+                height = hoveredHeight;
+                setFontSize();
+            }
         } else {
-            setFont(monospaceFont.deriveFont(Font.PLAIN, 20));
+            if (isHovered) {
+                isHovered = false;
+                height = standardHeight;
+                setFontSize();
+            }
         }
     }
 }

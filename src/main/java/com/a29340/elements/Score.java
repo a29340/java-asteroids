@@ -1,34 +1,36 @@
 package com.a29340.elements;
 
 import com.a29340.core.PlayElement;
+import com.a29340.core.Text;
 import com.a29340.core.UIElement;
 
 import java.awt.*;
 
-import static com.a29340.utils.Constants.monospaceFont;
-
-public class Score extends UIElement {
+public class Score {
     private static Integer score = 0;
+    private static final String text = "Score: ";
+    public static final Point gameplayPosition = new Point(40, 30);
 
     private static Score instance =  new Score();
+    private static Text scoreText;
+
 
     public static Score getInstance() {
         return instance;
     }
 
     private Score() {
+        scoreText = new Text(text + score, 20, gameplayPosition, Text.Alignement.LEFT);
     }
 
-    @Override
-    public void update(Graphics2D g2d) {
-        g2d.setColor(Color.YELLOW);
-        g2d.setFont(monospaceFont);
-        g2d.drawString("Score: " + score, getPosition().x, getPosition().y);
+    public static UIElement getTextInstance() {
+        return scoreText;
     }
 
     public static void processCollision(PlayElement a, PlayElement b) {
         if (asteroidHit(a,b) && a.getFrame() == 1 && b.getFrame() == 1) {
             score = score + 10;
+            scoreText.setText(text + score);
         }
     }
 
@@ -38,9 +40,14 @@ public class Score extends UIElement {
 
     public  static void resetScore() {
         score = 0;
+        scoreText.setText(text + score);
     }
 
-    public static void setInstancePosition(int x, int y) {
-        getInstance().setPosition(x, y);
+    public static void setTextPosition(Point point) {
+        scoreText.setPosition(point.x, point.y);
+    }
+
+    public static int getScore() {
+        return score;
     }
 }

@@ -18,7 +18,7 @@ public class StartMenuScene extends Scene {
 
     @Override
     public void setup() {
-        startText = new ClickableText("START", 130,30, new Point(Constants.FRAME_SIZE.width/2, Constants.FRAME_SIZE.height/2), () -> this.ended = true);
+        startText = new ClickableText("START", 20, new Point(Constants.FRAME_SIZE.width/2, Constants.FRAME_SIZE.height/2), () -> this.ended = true, 3f);
         uiElements.add(startText);
         mouseInputListeners.add(startText);
     }

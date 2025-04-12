@@ -16,10 +16,9 @@ public class GameplayScene extends Scene {
     @Override
     public void setup() {
         configureDashboard();
-        Score.setInstancePosition(40, 20);
         Score.resetScore();
         HealthBar.setHealth(HealthBar.INITIAL_HEALTH);
-        uiElements.add(Score.getInstance());
+        uiElements.add(Score.getTextInstance());
         configureShip();
         configureAsteroids();
         StageService.resume();
@@ -72,7 +71,6 @@ public class GameplayScene extends Scene {
     }
 
     public void reset() {
-        Score.setInstancePosition(40, 20);
         Score.resetScore();
         playElements.removeIf(playElement -> playElement instanceof Asteroid);
         ship.getPosition().setLocation(FRAME_SIZE.width / 2, FRAME_SIZE.height / 2);
