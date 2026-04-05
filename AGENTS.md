@@ -59,11 +59,6 @@ com.a29340/
 # Maven build
 mvn clean compile
 mvn package
-
-# Direct compilation (alternative)
-javac -d bin src/main/java/com/a29340/*.java
-mkdir -p bin/images && cp src/main/resources/images/* bin/images/
-
 # Run the game
 java -cp bin com.a29340.Main
 ```
@@ -113,3 +108,4 @@ When making changes:
 2. Keep implementations pure Java (no new dependencies)
 3. Update README.md if gameplay mechanics change
 4. Test thoroughly before committing
+5. Test coverage should only increase, never decrease. You can check the coverage by running `mvn verify` and looking in the target/site folder, where the JaCoCo report will be produced.
