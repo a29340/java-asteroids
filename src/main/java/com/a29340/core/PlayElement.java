@@ -83,4 +83,8 @@ public abstract class PlayElement extends Entity {
     public int getFrame() {
         return frame;
     }
+
+    public Velocity getVelocity() {
+        return velocity;
+    }
 }
