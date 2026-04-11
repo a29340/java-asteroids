@@ -94,12 +94,58 @@ java -cp bin com.a29340.Main
 - HUD elements: Extend `UIElement.java`
 - Text rendering: Use `Text.java` or `ClickableText.java`
 
-## Testing Considerations
+## Testing
 
-- Game loop runs continuously - ensure update() methods are efficient
-- Collision detection should account for object sizes
-- Asset loading must handle missing files gracefully
-- Scene transitions should clean up resources properly
+### Test Framework & Dependencies
+- **JUnit 5** (Jupiter) - `junit-jupiter-api` + `junit-jupiter-engine`
+- **AssertJ** - Fluent assertions library (`assertj-core`)
+- **Mockito** - Mocking framework (`mockito-inline`)
+
+### Test Commands
+```bash
+# Run all tests
+mvn test
+
+# Run tests with code coverage report
+mvn verify
+
+# View coverage report (generated in target/site/jacoco/)
+# Open: target/site/jacoco/index.html
+```
+
+### Coverage Requirements
+- **Minimum line coverage: 50%** (enforced by JaCoCo check goal)
+- Coverage threshold configured in pom.xml via `jacoco-maven-plugin`
+
+### Test File Conventions
+- Test files: `**/*Test.java` or `**/*Tests.java`
+- Test classes: `*Test` suffix
+- Location: `src/test/java/com/a29340/`
+
+### State Management in Tests
+Classes with static state (`HealthBar`, `Score`) require explicit reset:
+```java
+@BeforeEach
+void setUp() {
+    HealthBar.setHealth(HealthBar.INITIAL_HEALTH);
+    Score.resetScore();
+}
+
+@AfterEach
+void tearDown() {
+    HealthBar.setHealth(HealthBar.INITIAL_HEALTH);
+    Score.resetScore();
+}
+```
+
+### Testable Components
+- **Unit tests**: `Velocity`, `Entity`, `PlayElement`, `Asteroid`, `Beam`, `HealthBar`, `Score`, `Text`, `ClickableText`, `Configurations`
+- **Integration tests** (with mocked Swing): `StageService`, `StartMenuScene`, `GameplayScene`, `PostScene`
+
+### GUI Testing Notes
+- Scene classes extend `Scene` which uses `KeyListener` and `MouseInputListener`
+- Use Mockito to mock `MouseEvent` for clickable elements
+- Avoid testing actual rendering (`update()` methods with `Graphics2D`) - test logic only
 
 ## Contributing Guidelines
 
@@ -108,4 +154,5 @@ When making changes:
 2. Keep implementations pure Java (no new dependencies)
 3. Update README.md if gameplay mechanics change
 4. Test thoroughly before committing
-5. Test coverage should only increase, never decrease. You can check the coverage by running `mvn verify` and looking in the target/site folder, where the JaCoCo report will be produced.
+5. **Test coverage must not decrease** - run `mvn verify` to check coverage
+6. **Coverage threshold: 50%** - tests will fail if coverage drops below this
