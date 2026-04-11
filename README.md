@@ -56,6 +56,7 @@ In this Asteroids Clone, you control a spaceship in an asteroid field. The objec
 
 - **Smooth Controls:** Responsive and smooth movement for an enjoyable gameplay experience.
 - **Collision Detection:** Accurate collision detection between the spaceship, bullets, and asteroids.
+- **Sound Effects:** Immersive audio feedback with sound effects for asteroid explosions, ship impacts, and laser shots. All sounds are generated synthetically using Java's standard audio APIs (no external dependencies).
 - **Score Tracking:** Keeps track of your score as you destroy asteroids. (Coming soon)
 - **Pause Functionality:** Ability to pause and resume the game. (Coming soon)
 

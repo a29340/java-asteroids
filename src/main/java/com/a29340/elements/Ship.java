@@ -3,6 +3,7 @@ package com.a29340.elements;
 import com.a29340.core.Image;
 import com.a29340.core.PlayElement;
 import com.a29340.core.Velocity;
+import com.a29340.utils.Sound;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
@@ -47,6 +48,8 @@ public class Ship extends PlayElement implements MouseInputListener, KeyListener
             Beam beam = new Beam(new Point(position.x + v,position.y - u),
                     new Velocity(angle, BEAM_SPEED));
             this.beamFunction.accept(beam);
+            // Play fire sound when beam is fired
+            Sound.playSound(Sound.EventType.BEAM_FIRE);
         }
     }
 
@@ -159,6 +162,7 @@ public class Ship extends PlayElement implements MouseInputListener, KeyListener
     @Override
     public void acceptCollision(PlayElement collided) {
         if (collided instanceof Asteroid && frame == 0) {
+            Sound.playSound(Sound.EventType.SHIP_HIT);
             HealthBar.setHealth(HealthBar.getHealth() - 10);
             frame = 1;
         }

@@ -3,6 +3,7 @@ package com.a29340.elements;
 import com.a29340.core.Image;
 import com.a29340.core.PlayElement;
 import com.a29340.core.Velocity;
+import com.a29340.utils.Sound;
 
 import java.awt.*;
 
@@ -39,6 +40,7 @@ public class Beam extends PlayElement {
     public void acceptCollision(PlayElement collided) {
         if (collided instanceof Asteroid) {
             if (hit == false) {
+                Sound.playSound(Sound.EventType.ASTEROID_EXPLOSION);
                 hit = true;
                 velocity.setDx(0);
                 velocity.setDy(0);

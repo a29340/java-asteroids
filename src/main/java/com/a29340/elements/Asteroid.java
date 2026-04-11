@@ -3,6 +3,7 @@ package com.a29340.elements;
 import com.a29340.core.Image;
 import com.a29340.core.PlayElement;
 import com.a29340.core.Velocity;
+import com.a29340.utils.Sound;
 
 import java.awt.*;
 
@@ -49,6 +50,8 @@ public class Asteroid extends PlayElement {
 
     @Override
     public void acceptCollision(PlayElement collided) {
+        // Play explosion sound when asteroid is hit
+        Sound.playSound(Sound.EventType.ASTEROID_EXPLOSION);
         hit = true;
     }
 }

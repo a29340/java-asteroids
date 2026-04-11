@@ -43,7 +43,8 @@ com.a29340/
     ├── Constants.java     # Game constants
     ├── Configurations.java # Settings
     ├── DebugInfo.java     # Debug overlay
-    └── Graphics.java      # Drawing utilities
+    ├── Graphics.java      # Drawing utilities
+    └── Sound.java         # Audio playback and sound effect generation
 ```
 
 ## Key Design Patterns
@@ -74,7 +75,38 @@ java -cp bin com.a29340.Main
 1. **No external game libraries** - Only standard Java APIs allowed
 2. **Swing-based rendering** - All graphics use Graphics2D
 3. **Scene transitions** - Must properly manage scene lifecycle
-4. **Asset paths** - Images located in `src/main/resources/images/`
+4. **Asset paths** - Images and sound files located in `src/main/resources/images/`
+
+## Sound Effects System
+
+The game includes synthesized sound effects using Java's standard audio APIs (javax.sound.sampled). No external dependencies are required.
+
+### Event Types
+- **ASTEROID_EXPLOSION**: Played when an asteroid is destroyed by a beam or collision
+- **SHIP_HIT**: Played when the ship collides with an asteroid  
+- **BEAM_FIRE**: Played when a laser shot is fired
+
+### Audio Generation
+Sound effects are generated at runtime using `generate_sounds.java`, which creates synthetic WAV files (22050 Hz, mono) with:
+- Attack/decay envelopes for natural sound shaping
+- Harmonic content for richer audio
+- Frequency modulation for realism
+
+### Usage
+```java
+// Play sound by event type
+Sound.playSound(Sound.EventType.ASTEROID_EXPLOSION);
+
+// Play sound by file name
+Sound.playSound("custom-sound.wav");
+
+// Toggle mute
+Sound.setMuted(true);  // Mute all sounds
+Sound.setMuted(false); // Enable sounds
+
+// Check mute state
+if (Sound.isMuted()) { ... }
+```
 
 ## Common Tasks
 
